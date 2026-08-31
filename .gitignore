@@ -1,3 +1,19 @@
+# macOS
 .DS_Store
 ._*
+.AppleDouble
+.LSOverride
+
+# Windows
 Thumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local servers / logs
+*.log
+.image-slots.state.json
