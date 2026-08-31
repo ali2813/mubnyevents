@@ -237,56 +237,37 @@
 }
 </style>
 <style>
-  html, body { margin:0; padding:0; background:#EBDFC4; }
+  html, body { margin:0; padding:0; background:#F6F1E6; }
   * { box-sizing: border-box; }
   a { color:#14483A; text-decoration: none; }
   a:hover { color:#B98A3C; }
   ::selection { background:#B98A3C; color:#fff; }
   @keyframes riseIn { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:none;} }
 
-  /* Warm living backdrop — a honeyed cream field with soft pools of candlelit
-     gold that drift slowly across it. Fixed behind everything; the opaque
-     green bands simply cover it. */
+  /* Warm ivory — a whisper of gold in the corners, no motion. The interactive
+     dot field (canvas, mounted by the script before </body>) rides over this. */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: -2;
     pointer-events: none;
-    background-color: #EBDFC4;
+    background-color: #F6F1E6;
     background-repeat: no-repeat;
     background-image:
-      radial-gradient(80vmax 70vmax at 22% 18%, rgba(210,170,108,0.55), transparent 70%),
-      radial-gradient(70vmax 70vmax at 88% 26%, rgba(226,196,142,0.50), transparent 68%),
-      radial-gradient(85vmax 80vmax at 72% 95%, rgba(193,140,90,0.45), transparent 68%),
-      radial-gradient(60vmax 60vmax at 10% 88%, rgba(233,208,160,0.45), transparent 68%),
-      radial-gradient(70vmax 70vmax at 50% 55%, rgba(20,72,58,0.06), transparent 72%);
-    background-size:
-      110vmax 100vmax, 100vmax 100vmax, 120vmax 110vmax, 90vmax 90vmax, 100vmax 100vmax;
-    background-position: 18% 12%, 90% 22%, 70% 98%, 6% 92%, 50% 50%;
-    animation: mubnyGlow 34s ease-in-out infinite alternate;
-  }
-  @keyframes mubnyGlow {
-    0%   { background-position: 12% 6%,  95% 16%, 66% 100%,  2% 96%, 50% 50%; }
-    50%  { background-position: 28% 22%, 78% 34%, 86% 86%,  22% 78%, 50% 50%; }
-    100% { background-position: 16% 12%, 90% 20%, 62% 104%,  6% 98%, 50% 50%; }
+      radial-gradient(120% 80% at 50% -12%, rgba(238,224,194,0.26), transparent 62%),
+      radial-gradient(90% 75% at 105% 108%, rgba(228,208,172,0.30), transparent 66%),
+      radial-gradient(80% 70% at -8% 100%, rgba(232,214,182,0.24), transparent 66%);
   }
 
-  /* Fine paper grain — static, barely there; reads as texture, not noise. */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0.055;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 140px 140px;
+  /* Staff drawer — a plain hidden element (not conditionally rendered), so it
+     can only appear when the dashboard is actually opened. */
+  .mubny-drawer {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(9,20,16,0.55); backdrop-filter: blur(6px);
+    display: none; justify-content: flex-end;
   }
-
-  @media (prefers-reduced-motion: reduce) {
-    body::before { animation: none; }
-  }
+  .mubny-drawer.is-open { display: flex; }
 </style>
 </helmet>
 
@@ -308,7 +289,7 @@
       <a href="#gallery" style="font-size:14px; color:#3E5249">Gallery</a>
       <a href="#availability" style="font-size:14px; color:#3E5249">Availability</a>
       <a href="#rates" style="font-size:14px; color:#3E5249">Rates</a>
-      <a href="tel:+17165909129" style="display:inline-flex; align-items:center; gap:8px; padding:11px 20px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:14px; font-weight:600" style-hover="background:#B98A3C; color:#12261F">(716) 590-9129</a>
+      <a href="tel:+17169516433" style="display:inline-flex; align-items:center; gap:8px; padding:11px 20px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:14px; font-weight:600" style-hover="background:#B98A3C; color:#12261F">(716) 951-6433</a>
     </nav>
   </header>
 
@@ -320,7 +301,7 @@
       <h1 style="font-family:'Instrument Serif',serif; font-size:clamp(40px,7.2vw,76px); line-height:1.02; letter-spacing:-0.02em; margin:0 0 24px; color:#12261F; text-wrap:balance">A hall built for<br><em style="color:#14483A">gathering well.</em></h1>
       <p style="font-size:18px; line-height:1.65; color:#4A5D54; max-width:52ch; margin:0 0 36px; text-wrap:pretty">5,000 square feet of open, fully furnished event space on Clinton Street — ready for your iftar, walima, community dinner or program. Tables and chairs included, 70+ parking spaces out front.</p>
       <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center">
-        <a href="tel:+17165909129" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:15px; font-weight:600" style-hover="background:#0E3428">Call to book</a>
+        <a href="tel:+17169516433" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:15px; font-weight:600" style-hover="background:#0E3428">Call to book</a>
         <a href="mailto:mubny.events@gmail.com" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; border:1px solid rgba(18,38,31,0.18); color:#12261F; font-size:15px; font-weight:600" style-hover="border-color:#14483A; background:rgba(20,72,58,0.05)">Email us</a>
       </div>
     </div>
@@ -426,7 +407,7 @@
           <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#7A8A82; margin-bottom:10px">Selected</div>
           <div style="font-family:'Instrument Serif',serif; font-size:28px; line-height:1.2; color:#12261F">{{ selectedLabel }}</div>
           <div style="margin-top:10px; font-size:14.5px; line-height:1.6; color:{{ selectedColor }}">{{ selectedNote }}</div>
-          <a href="tel:+17165909129" style="display:inline-flex; margin-top:18px; padding:13px 22px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:14px; font-weight:600" style-hover="background:#0E3428">Call to confirm</a>
+          <a href="tel:+17169516433" style="display:inline-flex; margin-top:18px; padding:13px 22px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:14px; font-weight:600" style-hover="background:#0E3428">Call to confirm</a>
         </div>
 
         <div style="display:flex; gap:20px; margin-top:22px; font-size:13px; color:#6B7C74">
@@ -466,13 +447,13 @@
         <p style="font-size:17px; line-height:1.7; color:#4A5D54; margin:0; max-width:50ch">Give us a call for current pricing and availability. We'll walk you through the date, the setup and what's included.</p>
       </div>
       <div style="display:flex; flex-direction:column; gap:12px; min-width:280px">
-        <a href="tel:+17165909129" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#14483A; color:#F7F3EC" style-hover="background:#0E3428">
+        <a href="tel:+17169516433" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#14483A; color:#F7F3EC" style-hover="background:#0E3428">
           <span style="font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(247,243,236,0.6)">Call</span>
-          <span style="font-family:'Instrument Serif',serif; font-size:30px">(716) 590-9129</span>
-        </a>
-        <a href="tel:+17169516433" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#fff; border:1px solid rgba(18,38,31,0.1); color:#12261F" style-hover="border-color:#B98A3C">
-          <span style="font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8A6A2A">Or call</span>
           <span style="font-family:'Instrument Serif',serif; font-size:30px">(716) 951-6433</span>
+        </a>
+        <a href="tel:+17165909129" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#fff; border:1px solid rgba(18,38,31,0.1); color:#12261F" style-hover="border-color:#B98A3C">
+          <span style="font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8A6A2A">Or call</span>
+          <span style="font-family:'Instrument Serif',serif; font-size:30px">(716) 590-9129</span>
         </a>
         <a href="mailto:mubny.events@gmail.com" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#fff; border:1px solid rgba(18,38,31,0.1); color:#12261F" style-hover="border-color:#B98A3C">
           <span style="font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:#7A8A82">Email</span>
@@ -503,8 +484,8 @@
       </div>
       <div style="display:flex; flex-direction:column; gap:14px">
         <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#B98A3C">Contact</div>
-        <a href="tel:+17165909129" style="font-size:16px; color:#F1EBE0" style-hover="color:#B98A3C">(716) 590-9129</a>
         <a href="tel:+17169516433" style="font-size:16px; color:#F1EBE0" style-hover="color:#B98A3C">(716) 951-6433</a>
+        <a href="tel:+17165909129" style="font-size:16px; color:#F1EBE0" style-hover="color:#B98A3C">(716) 590-9129</a>
         <a href="mailto:mubny.events@gmail.com" style="font-size:13.5px; color:rgba(241,235,224,0.65); overflow-wrap:anywhere" style-hover="color:#B98A3C">mubny.events@gmail.com</a>
       </div>
     </div>
@@ -514,8 +495,7 @@
     </div>
   </footer>
 
-  <sc-if value="{{ dashOpen }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed; inset:0; z-index:200; background:rgba(9,20,16,0.55); backdrop-filter:blur(6px); display:flex; justify-content:flex-end">
+  <div class="mubny-drawer {{ dashClass }}">
       <div style="width:min(560px,100%); height:100%; background:#F7F3EC; border-left:1px solid rgba(18,38,31,0.12); display:flex; flex-direction:column; overflow-y:auto">
         <div style="display:flex; align-items:center; justify-content:space-between; padding:26px 32px; border-bottom:1px solid rgba(18,38,31,0.1); position:sticky; top:0; background:#F7F3EC; z-index:2">
           <div>
@@ -525,7 +505,7 @@
           <button onClick="{{ closeDash }}" aria-label="Close" style="width:40px; height:40px; border-radius:100px; border:1px solid rgba(18,38,31,0.16); background:transparent; cursor:pointer; font-size:17px; color:#12261F" style-hover="background:#12261F; color:#F7F3EC">✕</button>
         </div>
 
-        <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
           <div style="padding:56px 32px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px">
             <img src="./mubny-logo.png" alt="MUBNY Events and Banquets" style="width:104px; height:104px">
             <div style="font-family:'Instrument Serif',serif; font-size:28px; color:#12261F; margin-top:8px">Staff access only</div>
@@ -568,7 +548,6 @@
         </sc-if>
       </div>
     </div>
-  </sc-if>
 </div>
 
 </x-dc>
@@ -680,6 +659,7 @@ class Component extends DCLogic {
       selectedLabel, selectedNote, selectedColor,
 
       dashOpen: this.state.dashOpen,
+      dashClass: this.state.dashOpen ? "is-open" : "",
       openDash: () => this.setState({ dashOpen: true, pin: "", pinError: "" }),
       closeDash: () => this.setState({ dashOpen: false }),
       locked: !this.state.unlocked,
@@ -750,6 +730,132 @@ class Component extends DCLogic {
   }
 }
 
+</script>
+
+<script>
+/* Interactive backdrop — a faint field of warm dots. They bob very slowly on
+   their own, and near the cursor they swell, brighten to gold and ease away
+   from it. Self-contained: mounts its own fixed canvas behind the whole page
+   (hero included), and falls back to a still field under reduced motion. */
+(function () {
+  if (window.__mubnyDots) return;
+  window.__mubnyDots = true;
+
+  var reduce = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var cv = document.createElement('canvas');
+  cv.setAttribute('aria-hidden', 'true');
+  // Sits ABOVE the section backgrounds (so the dots read on the dark green
+  // bands too) but below the sticky header (z 50) and the staff drawer
+  // (z 200); pointer-events:none keeps every control clickable.
+  cv.style.cssText =
+    'position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none';
+  var ctx = cv.getContext('2d');
+
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var GAP = 38, BASE_R = 1.25, BASE_A = 0.16, REACH = 165, PUSH = 26;
+  var BASE_RGB = '206,172,116';  // warm gold — legible on cream and on green
+  var DRIFT = 1.7;               // idle bob amplitude, px
+  var dots = [], W = 0, H = 0;
+  var mx = -9999, my = -9999, tx = -9999, ty = -9999;
+  var raf = 0, running = false, t0 = performance.now();
+
+  function build() {
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    dots.length = 0;
+    for (var y = GAP / 2; y < H + GAP; y += GAP)
+      for (var x = GAP / 2; x < W + GAP; x += GAP)
+        dots.push({ ox: x, oy: y, x: x, y: y });
+  }
+
+  function drawStill() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(' + BASE_RGB + ',' + BASE_A + ')';
+    for (var i = 0; i < dots.length; i++) {
+      ctx.beginPath();
+      ctx.arc(dots[i].ox, dots[i].oy, BASE_R, 0, 6.2832);
+      ctx.fill();
+    }
+  }
+
+  function frame() {
+    mx += (tx - mx) * 0.14;
+    my += (ty - my) * 0.14;
+    var t = (performance.now() - t0) * 0.001;
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < dots.length; i++) {
+      var d = dots[i];
+      // idle: a slow, tiny bob so the field feels alive before you touch it
+      var bx = d.ox + Math.sin(t * 0.5 + d.ox * 0.018 + d.oy * 0.01) * DRIFT;
+      var by = d.oy + Math.cos(t * 0.42 + d.oy * 0.02 - d.ox * 0.008) * DRIFT;
+      var dx = d.ox - mx, dy = d.oy - my;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      var gx = bx, gy = by, a = BASE_A, r = BASE_R, warm = 0;
+      if (dist < REACH) {
+        var f = 1 - dist / REACH, e = f * f, inv = dist > 0.001 ? 1 / dist : 0;
+        gx = d.ox + dx * inv * e * PUSH;
+        gy = d.oy + dy * inv * e * PUSH;
+        a = BASE_A + e * 0.42;
+        r = BASE_R + e * 1.4;
+        warm = e;
+      }
+      d.x += (gx - d.x) * 0.16;
+      d.y += (gy - d.y) * 0.16;
+      if (warm > 0) {
+        ctx.fillStyle = 'rgba(' +
+          Math.round(206 + 26 * warm) + ',' +
+          Math.round(172 + 20 * warm) + ',' +
+          Math.round(116 + 18 * warm) + ',' + a + ')';
+      } else {
+        ctx.fillStyle = 'rgba(' + BASE_RGB + ',' + a + ')';
+      }
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, r, 0, 6.2832);
+      ctx.fill();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  function kick() {
+    if (running || reduce) return;
+    running = true;
+    raf = requestAnimationFrame(frame);
+  }
+
+  function reset() {
+    build();
+    if (reduce) { drawStill(); return; }
+    drawStill();
+    kick();
+  }
+
+  function mount() {
+    var host = document.body || document.documentElement;
+    host.appendChild(cv);
+    reset();
+    window.addEventListener('pointermove', function (ev) {
+      if (ev.pointerType === 'touch') return;
+      tx = ev.clientX; ty = ev.clientY; kick();
+    }, { passive: true });
+    window.addEventListener('pointerdown', function (ev) {
+      if (ev.pointerType === 'touch') return;
+      tx = ev.clientX; ty = ev.clientY; kick();
+    }, { passive: true });
+    document.addEventListener('mouseleave', function () {
+      tx = -9999; ty = -9999; kick();
+    });
+    var rz;
+    window.addEventListener('resize', function () {
+      clearTimeout(rz); rz = setTimeout(reset, 150);
+    });
+  }
+
+  if (document.body) mount();
+  else document.addEventListener('DOMContentLoaded', mount);
+})();
 </script>
 
 </body></html>

@@ -60,4 +60,4 @@ Everything is static and self-contained (no external requests at runtime).
 
 ## Contact
 
-(716) 590-9129 · (716) 951-6433 · mubny.events@gmail.com
+(716) 951-6433 · (716) 590-9129 · mubny.events@gmail.com
