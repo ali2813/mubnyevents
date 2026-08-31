@@ -43,7 +43,7 @@ the filesystem won't work — the runtime and photos are fetched over HTTP. Use
 - **Stats / events / amenities:** the `stats`, `events`, `amenities` arrays in
   the same block.
 - **Staff dashboard:** opens from the footer link, passcode-gated. Add/remove
-  reservations; they save to `localStorage` (key `mch-reservations-v1`) and show
+  reservations; they save to `localStorage` (key `mubny-reservations-v1`) and show
   as unavailable on the public calendar. Default passcode `2010`, set via the
   `staffPasscode` prop in the `data-props` attribute on the script tag.
 

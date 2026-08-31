@@ -299,7 +299,7 @@
         <span style="color:#B98A3C; font-size:13px">★★★★★</span> Buffalo's community venue
       </div>
       <h1 style="font-family:'Instrument Serif',serif; font-size:clamp(40px,7.2vw,76px); line-height:1.02; letter-spacing:-0.02em; margin:0 0 24px; color:#12261F; text-wrap:balance">A hall built for<br><em style="color:#14483A">gathering well.</em></h1>
-      <p style="font-size:18px; line-height:1.65; color:#4A5D54; max-width:52ch; margin:0 0 36px; text-wrap:pretty">5,000 square feet of open, fully furnished event space on Clinton Street — ready for your iftar, walima, community dinner or program. Tables and chairs included, 70+ parking spaces out front.</p>
+      <p style="font-size:18px; line-height:1.65; color:#4A5D54; max-width:52ch; margin:0 0 36px; text-wrap:pretty">5,000 square feet of open, fully furnished event space on Clinton Street — ready for your wedding reception, celebration, fundraiser or program. Tables and chairs included, 70+ parking spaces out front.</p>
       <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center">
         <a href="tel:+17169516433" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:15px; font-weight:600" style-hover="background:#0E3428">Call to book</a>
         <a href="mailto:mubny.events@gmail.com" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; border:1px solid rgba(18,38,31,0.18); color:#12261F; font-size:15px; font-weight:600" style-hover="border-color:#14483A; background:rgba(20,72,58,0.05)">Email us</a>
@@ -520,7 +520,7 @@
         <div style="padding:28px 32px; display:flex; flex-direction:column; gap:14px; border-bottom:1px solid rgba(18,38,31,0.1)">
           <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#B98A3C">Add a booking</div>
           <input type="date" value="{{ formDate }}" onChange="{{ setDate }}" style="padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#12261F">
-          <input type="text" placeholder="Event name (e.g. Khan Walima)" value="{{ formTitle }}" onChange="{{ setTitle }}" style="padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#12261F">
+          <input type="text" placeholder="Event name (e.g. Johnson Wedding)" value="{{ formTitle }}" onChange="{{ setTitle }}" style="padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#12261F">
           <input type="text" placeholder="Contact (name or phone)" value="{{ formContact }}" onChange="{{ setContact }}" style="padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#12261F">
           <button onClick="{{ addBooking }}" style="padding:15px 22px; border-radius:100px; border:none; background:#14483A; color:#F7F3EC; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer" style-hover="background:#0E3428">Mark date as booked</button>
         </div>
@@ -565,15 +565,15 @@ class Component extends DCLogic {
     bookings: [],
   };
 
-  KEY = "mch-reservations-v1";
+  KEY = "mubny-reservations-v1";
 
   componentDidMount() {
     try {
       const raw = localStorage.getItem(this.KEY);
       if (raw) this.setState({ bookings: JSON.parse(raw) });
       else this.setState({ bookings: [
-        { date: this.iso(new Date(Date.now() + 6 * 864e5)), title: "Community Iftar", contact: "Masjid committee" },
-        { date: this.iso(new Date(Date.now() + 13 * 864e5)), title: "Rahman Nikah", contact: "(716) 555-0142" },
+        { date: this.iso(new Date(Date.now() + 6 * 864e5)), title: "Anderson Wedding", contact: "(716) 555-0148" },
+        { date: this.iso(new Date(Date.now() + 13 * 864e5)), title: "Rotary Club Banquet", contact: "Events committee" },
       ] });
     } catch (e) {}
   }
@@ -712,11 +712,11 @@ class Component extends DCLogic {
         { value: "5★", label: "Community rating" },
       ],
       events: [
-        { n: "01", title: "Iftar Parties", note: "Ramadan evenings with room for the whole jamaat." },
-        { n: "02", title: "Nikah & Walima", note: "A calm, spacious setting for the celebration." },
-        { n: "03", title: "Family Gatherings", note: "Birthdays, aqiqah, reunions and graduations." },
-        { n: "04", title: "Community Dinners", note: "Fundraisers and organization banquets." },
-        { n: "05", title: "Programs & Lectures", note: "Rows, podium and open floor for talks." },
+        { n: "01", title: "Wedding Receptions", note: "The whole celebration under one roof — ceremony, dinner and dancing." },
+        { n: "02", title: "Milestone Celebrations", note: "Birthdays, anniversaries, graduations, showers and reunions." },
+        { n: "03", title: "Corporate & Fundraising Events", note: "Galas, conferences, award nights and nonprofit banquets." },
+        { n: "04", title: "Cultural & Faith Gatherings", note: "Holiday dinners, iftars and religious programs — every community welcome." },
+        { n: "05", title: "Meetings & Programs", note: "Rows, a podium and open floor for lectures, trainings and panels." },
       ],
       amenities: [
         { title: "Tables & chairs", body: "Fully furnished and ready to use on arrival." },
