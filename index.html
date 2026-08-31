@@ -832,21 +832,23 @@ class Component extends DCLogic {
     kick();
   }
 
+  function aim(ev) { tx = ev.clientX; ty = ev.clientY; kick(); }
+  function release() { tx = -9999; ty = -9999; kick(); }
+
   function mount() {
     var host = document.body || document.documentElement;
     host.appendChild(cv);
     reset();
-    window.addEventListener('pointermove', function (ev) {
-      if (ev.pointerType === 'touch') return;
-      tx = ev.clientX; ty = ev.clientY; kick();
+    // pointer* covers mouse hover AND a finger dragging on a touch screen;
+    // all listeners are passive so scrolling stays smooth.
+    window.addEventListener('pointermove', aim, { passive: true });
+    window.addEventListener('pointerdown', aim, { passive: true });
+    // let the dots ease home when the mouse leaves or the finger lifts
+    document.addEventListener('mouseleave', release);
+    window.addEventListener('pointerup', function (ev) {
+      if (ev.pointerType !== 'mouse') release();
     }, { passive: true });
-    window.addEventListener('pointerdown', function (ev) {
-      if (ev.pointerType === 'touch') return;
-      tx = ev.clientX; ty = ev.clientY; kick();
-    }, { passive: true });
-    document.addEventListener('mouseleave', function () {
-      tx = -9999; ty = -9999; kick();
-    });
+    window.addEventListener('pointercancel', release, { passive: true });
     var rz;
     window.addEventListener('resize', function () {
       clearTimeout(rz); rz = setTimeout(reset, 150);
