@@ -260,15 +260,12 @@
       radial-gradient(80% 70% at -8% 100%, rgba(232,214,182,0.24), transparent 66%);
   }
 
-  /* Phones: stack the hero with the photo on top, then the copy.
+  /* Phones: stack the hero with the photo on top, then the copy. The frame
+     keeps its full 4/5 archway height; only the spacing tightens.
      (!important because the base rules are inline styles.) */
   @media (max-width: 760px) {
-    .mch-hero { gap: 40px !important; padding-top: 64px !important; }
-    .mch-hero-media {
-      order: -1;
-      aspect-ratio: 4 / 3 !important;
-      border-radius: 150px 150px 18px 18px !important;
-    }
+    .mch-hero { gap: 36px !important; padding-top: 56px !important; padding-bottom: 8px !important; }
+    .mch-hero-media { order: -1; }
   }
 
   /* Staff drawer — a plain hidden element (not conditionally rendered), so it
@@ -316,7 +313,7 @@
         <a href="mailto:mubny.events@gmail.com" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; border:1px solid rgba(18,38,31,0.18); color:#12261F; font-size:15px; font-weight:600" style-hover="border-color:#14483A; background:rgba(20,72,58,0.05)">Email us</a>
       </div>
     </div>
-    <div class="mch-hero-media" style="position:relative; aspect-ratio:4/5; border-radius:280px 280px 20px 20px; overflow:hidden; background:#EAE2D5; border:1px solid rgba(18,38,31,0.1)">
+    <div class="mch-hero-media" style="position:relative; aspect-ratio:4/5; border-radius:999px 999px 22px 22px; overflow:hidden; background:#EAE2D5; border:1px solid rgba(18,38,31,0.1)">
       <img src="./photos/table-detail.jpg" alt="Close view of a set table with gold runner and floral centerpiece" style="width:100%; height:100%; object-fit:cover; display:block">
     </div>
   </section>
