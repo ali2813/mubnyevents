@@ -260,6 +260,17 @@
       radial-gradient(80% 70% at -8% 100%, rgba(232,214,182,0.24), transparent 66%);
   }
 
+  /* Phones: stack the hero with the photo on top, then the copy.
+     (!important because the base rules are inline styles.) */
+  @media (max-width: 760px) {
+    .mch-hero { gap: 40px !important; padding-top: 64px !important; }
+    .mch-hero-media {
+      order: -1;
+      aspect-ratio: 4 / 3 !important;
+      border-radius: 150px 150px 18px 18px !important;
+    }
+  }
+
   /* Staff drawer — a plain hidden element (not conditionally rendered), so it
      can only appear when the dashboard is actually opened. */
   .mubny-drawer {
@@ -293,7 +304,7 @@
     </nav>
   </header>
 
-  <section id="top" style="position:relative; padding:96px clamp(18px,4.5vw,40px) 80px; display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:64px; align-items:center; max-width:1360px; margin:0 auto">
+  <section id="top" class="mch-hero" style="position:relative; padding:96px clamp(18px,4.5vw,40px) 80px; display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:64px; align-items:center; max-width:1360px; margin:0 auto">
     <div style="animation: riseIn 700ms ease both">
       <div style="display:inline-flex; align-items:center; gap:10px; padding:7px 14px 7px 10px; border:1px solid rgba(185,138,60,0.45); border-radius:100px; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#8A6A2A; margin-bottom:28px">
         <span style="color:#B98A3C; font-size:13px">★★★★★</span> Buffalo's community venue
@@ -305,7 +316,7 @@
         <a href="mailto:mubny.events@gmail.com" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; border:1px solid rgba(18,38,31,0.18); color:#12261F; font-size:15px; font-weight:600" style-hover="border-color:#14483A; background:rgba(20,72,58,0.05)">Email us</a>
       </div>
     </div>
-    <div style="position:relative; aspect-ratio:4/5; border-radius:280px 280px 20px 20px; overflow:hidden; background:#EAE2D5; border:1px solid rgba(18,38,31,0.1)">
+    <div class="mch-hero-media" style="position:relative; aspect-ratio:4/5; border-radius:280px 280px 20px 20px; overflow:hidden; background:#EAE2D5; border:1px solid rgba(18,38,31,0.1)">
       <img src="./photos/table-detail.jpg" alt="Close view of a set table with gold runner and floral centerpiece" style="width:100%; height:100%; object-fit:cover; display:block">
     </div>
   </section>
