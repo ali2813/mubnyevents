@@ -441,24 +441,34 @@ a { color: var(--cream); text-decoration: none; }
 .arch img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 @media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; gap: 28px; min-height: 0; padding-top: 32px; }
+  .hero { grid-template-columns: 1fr; gap: 30px; min-height: 0; padding-top: 30px; }
   .hero-media { order: -1; }
-  /* A 3/4 arch at phone width eats the whole screen and pushes the CTA under
-     the fold. Cap it by height instead so headline, lede and buttons all sit
-     in the first viewport. */
-  .arch { aspect-ratio: auto; height: clamp(200px, 32dvh, 330px); }
+  /* Keeps the desktop 4:5 archway. It is the identity of the page, so it is
+     not worth flattening to win a few pixels of fold. */
+  .arch { aspect-ratio: 4/5; height: auto; }
 }
 
-/* Phones: the nav links collapse away, so give the lockup and the phone
-   button room rather than letting the number get clipped. */
+/* Phones: the nav links collapse away. Give the lockup and the phone button
+   room by tightening spacing, never by dropping the wordmark subline, which
+   has to read the same as it does on desktop. */
 @media (max-width: 520px) {
-  .hdr { padding-inline: 16px; gap: 10px; height: 64px; }
-  .lockup { gap: 9px; min-width: 0; }
-  .lockup-sub { display: none; }
-  .lockup-name { font-size: 19px; }
-  .nav .btn { padding: 10px 14px; font-size: 13px; }
+  .hdr { padding-inline: 14px; gap: 8px; height: 66px; }
+  .lockup { gap: 8px; min-width: 0; }
+  .lockup-img { width: 38px; height: 33px; }
+  .lockup-img img { width: 49px; height: 49px; left: -5px; top: -2px; }
+  .lockup-name { font-size: 17px; letter-spacing: 0.12em; }
+  .lockup-sub { font-size: 7px; letter-spacing: 0.18em; margin-top: 4px; }
+  .nav .btn { padding: 9px 12px; font-size: 12.5px; }
   .hero h1 { font-size: clamp(38px, 11vw, 52px); }
   .eyebrow { font-size: 10.5px; letter-spacing: 0.16em; }
+}
+
+/* Very narrow phones only: the wordmark stays, the phone button loses its
+   formatting rather than the brand losing its subline. */
+@media (max-width: 360px) {
+  .lockup-name { font-size: 16px; }
+  .lockup-sub { font-size: 6.5px; letter-spacing: 0.14em; }
+  .nav .btn { padding: 9px 10px; font-size: 11.5px; }
 }
 
 /* ---- stats: hairline strip, no cards --------------------------------- */

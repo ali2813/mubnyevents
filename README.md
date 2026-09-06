@@ -17,7 +17,6 @@ inside `<x-dc>`.
 | `assets/fonts/` | Instrument Serif + Plus Jakarta Sans `woff2` subsets, self-hosted, wired up via `@font-face` in `index.html`. |
 | `photos/` | Venue photography (hero + gallery). |
 | `mubny-logo.png` | Logo — favicon, header, footer. |
-| `standalone.html` | One-file build with the runtime, React and fonts inlined as base64 — for emailing or opening from disk without a server. Not used for deployment. Regenerate from `index.html` via Claude Design's "deploy" export. |
 
 ## Run locally
 
@@ -28,8 +27,8 @@ python3 -m http.server 4599
 ```
 
 Then open <http://localhost:4599/index.html>. (Opening `index.html` straight off
-the filesystem won't work — the runtime and photos are fetched over HTTP. Use
-`standalone.html` for that, or run a server.)
+the filesystem won't work — the runtime and photos are fetched over HTTP, so
+you need a server.)
 
 ## Edit
 
