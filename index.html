@@ -9,14 +9,19 @@
 <body>
 <x-dc>
 <helmet>
-<title>MUBNY Events &amp; Banquets — Banquet Hall in Buffalo, NY</title>
+<title>MUBNY Events &amp; Banquets, Banquet Hall in Buffalo NY</title>
 <meta name="description" content="MUBNY Events &amp; Banquets is a 5,000 sq. ft. banquet hall in Buffalo, NY seating 300+ guests. Weddings, receptions, corporate events and community gatherings.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0E2A21">
 <meta property="og:title" content="MUBNY Events &amp; Banquets">
 <meta property="og:description" content="A 5,000 sq. ft. banquet hall in Buffalo, NY seating 300+ guests.">
-<meta property="og:image" content="./photos/hall-panorama.jpg">
+<meta property="og:image" content="./photos/hall-panorama-web.jpg">
 <meta property="og:type" content="business.business">
 <link rel="icon" href="./mubny-logo.png">
+<link rel="apple-touch-icon" href="./mubny-logo.png">
+<link rel="preload" as="image" href="./photos/table-detail.jpg" fetchpriority="high">
+
+<style>
 <link rel="apple-touch-icon" href="./mubny-logo.png">
 
 <style>/* latin-ext */
@@ -235,211 +240,643 @@
   src: url("./assets/fonts/plus-jakarta-sans-latin.woff2") format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
+/* Playfair Display (variable 400-700), self-hosted to match the rest of the
+   stack. Used for editorial display type only; the MUBNY wordmark stays in
+   Instrument Serif because that lockup is the logo. */
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/playfair-display-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/playfair-display-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 </style>
 <style>
-  html, body { margin:0; padding:0; background:#F6F1E6; }
-  * { box-sizing: border-box; }
-  a { color:#14483A; text-decoration: none; }
-  a:hover { color:#B98A3C; }
-  ::selection { background:#B98A3C; color:#fff; }
-  @keyframes riseIn { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:none;} }
+/* ============================================================
+   MUBNY Events and Banquets
+   Direction: Architectural Gallery. One locked dark theme.
+   Accent: gold (#B98A3C) and nothing else, on every section.
+   Shape: square by default (radius 0). The single exception is
+   the hero frame, whose arch is a figurative shape borrowed
+   from the building itself, not a corner radius.
+   ============================================================ */
 
-  /* Warm ivory — a whisper of gold in the corners, no motion. The interactive
-     dot field (canvas, mounted by the script before </body>) rides over this. */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    pointer-events: none;
-    background-color: #F6F1E6;
-    background-repeat: no-repeat;
-    background-image:
-      radial-gradient(120% 80% at 50% -12%, rgba(238,224,194,0.26), transparent 62%),
-      radial-gradient(90% 75% at 105% 108%, rgba(228,208,172,0.30), transparent 66%),
-      radial-gradient(80% 70% at -8% 100%, rgba(232,214,182,0.24), transparent 66%);
-  }
+:root {
+  /* surfaces, darkest to lightest */
+  --ink:      #081813;
+  --canvas:   #0E2A21;
+  --raised:   #143A2E;
+  --raised-2: #1A4739;
 
-  /* Phones: stack the hero with the photo on top, then the copy. The frame
-     keeps its full 4/5 archway height; only the spacing tightens.
-     (!important because the base rules are inline styles.) */
-  @media (max-width: 760px) {
-    .mch-hero { gap: 36px !important; padding-top: 56px !important; padding-bottom: 8px !important; }
-    .mch-hero-media { order: -1; }
-  }
+  /* type */
+  --cream:    #F4EFE4;   /* 13.4:1 on canvas */
+  --body:     #B0BFB6;   /*  8.0:1 on canvas */
+  --faint:    rgba(244,239,228,0.46);
 
-  /* Staff drawer — a plain hidden element (not conditionally rendered), so it
-     can only appear when the dashboard is actually opened. */
-  .mubny-drawer {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(9,20,16,0.55); backdrop-filter: blur(6px);
-    display: none; justify-content: flex-end;
-  }
-  .mubny-drawer.is-open { display: flex; }
+  /* the one accent */
+  --gold:     #B98A3C;   /* 4.9:1 on canvas. fills, rules, large display */
+  --gold-lt:  #D6A85A;   /* 7.0:1 on canvas. small caps labels */
+
+  /* booked state */
+  --warn:     #E08A72;   /* 5.9:1 on canvas */
+
+  --line:     rgba(244,239,228,0.14);
+  --line-2:   rgba(244,239,228,0.26);
+
+  --shell: 1360px;
+  --pad: clamp(20px, 4.5vw, 44px);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --mark: 'Instrument Serif', Georgia, serif;
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--canvas); }
+body {
+  margin: 0; padding: 0;
+  /* Transparent on purpose. body::before sits at z-index -2, which paints
+     BEHIND body's own background, so an opaque body would hide the gradient
+     entirely. html carries the base colour instead. */
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--sans);
+}
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+/* clip, not hidden: hidden here would make <body> the scroller */
+.page { overflow-x: clip; }
+
+/* The room's light, not decoration. A warm bloom sits upper-right, behind
+   the arch, so the page is lit from where the window is in the photograph;
+   a fainter bounce comes off the floor; and a vertical grade keeps the top
+   of the page darker than the bottom so long scrolls gain depth.
+   Fixed rather than background-attachment:fixed, which janks on iOS. */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background-color: var(--canvas);
+  background-repeat: no-repeat;
+  background-image:
+    radial-gradient(64% 52% at 80% 4%,  rgba(214,168,90,0.20), transparent 66%),
+    radial-gradient(96% 58% at 50% 106%, rgba(185,138,60,0.13), transparent 62%),
+    linear-gradient(180deg, #081F18 0%, #0E2A21 36%, #0E2A21 70%, #133429 100%);
+}
+
+a { color: var(--cream); text-decoration: none; }
+::selection { background: var(--gold); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--gold-lt);
+  outline-offset: 3px;
+}
+
+.shell { max-width: var(--shell); margin: 0 auto; padding-inline: var(--pad); }
+
+/* ---- type scale ------------------------------------------------------ */
+
+.display {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: -0.018em;
+  color: var(--cream);
+  margin: 0;
+  text-wrap: balance;
+}
+.h-sec { font-size: clamp(32px, 4.6vw, 56px); line-height: 1.06; }
+.lede  { font-size: clamp(16px, 1.5vw, 18px); line-height: 1.7; color: var(--body); max-width: 54ch; margin: 0; text-wrap: pretty; }
+
+/* the page's only eyebrow lives in the hero */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold-lt);
+}
+
+/* a hairline that carries the accent, used to open major sections */
+.rule { height: 1px; background: var(--line); position: relative; }
+.rule::before { content: ""; position: absolute; left: 0; top: 0; width: 84px; height: 1px; background: var(--gold); }
+
+/* ---- buttons (square, per the shape lock) ---------------------------- */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 15px 26px; font-family: var(--sans); font-size: 15px; font-weight: 600;
+  white-space: nowrap; border: 1px solid transparent; cursor: pointer;
+  transition: background 220ms var(--ease), color 220ms var(--ease),
+              border-color 220ms var(--ease), transform 120ms var(--ease);
+}
+.btn:active { transform: translateY(1px); }
+.btn-gold  { background: var(--gold); color: var(--ink); }        /* 4.9:1 */
+.btn-gold:hover  { background: var(--gold-lt); color: var(--ink); }
+.btn-ghost { background: transparent; color: var(--cream); border-color: var(--line-2); }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold-lt); }
+
+/* ---- header ---------------------------------------------------------- */
+
+.hdr {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: clamp(14px, 3vw, 28px);
+  height: 72px; padding-inline: var(--pad);
+  background: rgba(14,42,33,0.82);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.lockup { display: flex; align-items: center; gap: 12px; flex: none; }
+.lockup-img { display: block; position: relative; width: 44px; height: 38px; overflow: hidden; flex: none; }
+.lockup-img img { position: absolute; width: 57px; height: 57px; left: -6px; top: -2px; }
+.lockup-name { font-family: var(--mark); font-size: 21px; letter-spacing: 0.14em; color: var(--cream); line-height: 1; }
+.lockup-sub  { font-size: 8.5px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-lt); margin-top: 5px; line-height: 1; }
+
+.nav { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 34px); }
+.nav a { font-size: 14px; color: var(--body); transition: color 200ms var(--ease); }
+.nav a:hover { color: var(--gold-lt); }
+.nav .btn { padding: 11px 20px; font-size: 14px; }
+.nav-links { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 34px); }
+
+@media (max-width: 860px) { .nav-links { display: none; } }
+
+/* ---- hero: asymmetric split, arch frame ------------------------------ */
+
+.hero {
+  display: grid; grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(40px, 5vw, 80px); align-items: center;
+  padding-top: clamp(48px, 6vw, 88px); padding-bottom: clamp(56px, 6vw, 96px);
+  min-height: min(760px, calc(100dvh - 72px));
+}
+.hero-copy > * + * { margin-top: 26px; }
+.hero h1 {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(44px, 6.6vw, 82px);
+  line-height: 1.06;              /* clears the italic 'g' descender */
+  letter-spacing: -0.025em;
+  margin: 0; color: var(--cream);
+}
+.hero h1 em { font-style: italic; color: var(--gold); display: inline-block; padding-bottom: 0.08em; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.arch {
+  position: relative; aspect-ratio: 4/5; overflow: hidden;
+  background: var(--raised);
+  border: 1px solid var(--line-2);
+  border-radius: 999px 999px 0 0;   /* the building's arch, not a corner radius */
+}
+.arch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 28px; min-height: 0; padding-top: 32px; }
+  .hero-media { order: -1; }
+  /* A 3/4 arch at phone width eats the whole screen and pushes the CTA under
+     the fold. Cap it by height instead so headline, lede and buttons all sit
+     in the first viewport. */
+  .arch { aspect-ratio: auto; height: clamp(200px, 32dvh, 330px); }
+}
+
+/* Phones: the nav links collapse away, so give the lockup and the phone
+   button room rather than letting the number get clipped. */
+@media (max-width: 520px) {
+  .hdr { padding-inline: 16px; gap: 10px; height: 64px; }
+  .lockup { gap: 9px; min-width: 0; }
+  .lockup-sub { display: none; }
+  .lockup-name { font-size: 19px; }
+  .nav .btn { padding: 10px 14px; font-size: 13px; }
+  .hero h1 { font-size: clamp(38px, 11vw, 52px); }
+  .eyebrow { font-size: 10.5px; letter-spacing: 0.16em; }
+}
+
+/* ---- stats: hairline strip, no cards --------------------------------- */
+
+.stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.stat { padding: 34px clamp(14px, 2.4vw, 28px); border-right: 1px solid var(--line); }
+.stat:last-child { border-right: none; }
+.stat-v { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); line-height: 1; color: var(--gold); }
+.stat-l { margin-top: 10px; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--body); }
+@media (max-width: 760px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stat:nth-child(2n) { border-right: none; }
+  .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+}
+
+/* ---- events: asymmetric bento, 5 items = 5 cells --------------------- */
+
+.sec { padding-block: clamp(72px, 9vw, 128px); }
+.sec-head { margin-bottom: clamp(36px, 4vw, 56px); }
+.sec-head .h-sec { max-width: 18ch; margin-top: 22px; }
+.sec-head .lede { margin-top: 20px; }
+
+.bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; }
+.tile {
+  position: relative; overflow: hidden;
+  background: var(--raised); padding: 30px 28px 32px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 12px;
+  min-height: 230px;
+  transition: background 260ms var(--ease);
+}
+.tile:hover { background: var(--raised-2); }
+.tile-t { font-family: var(--display); font-size: clamp(23px, 2.1vw, 29px); line-height: 1.15; color: var(--cream); }
+.tile-n { font-size: 14px; line-height: 1.6; color: var(--body); max-width: 40ch; }
+
+/* photo-backed cells: real visual variation, not six text boxes */
+.tile-photo { min-height: 340px; }
+.tile-photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 0;
+  transition: transform 700ms var(--ease);
+}
+.tile-photo:hover img { transform: scale(1.04); }
+.tile-photo::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(8,24,19,0.06) 0%, rgba(8,24,19,0.18) 42%, rgba(8,24,19,0.80) 78%, rgba(8,24,19,0.93) 100%);
+}
+.tile-photo > .tile-t, .tile-photo > .tile-n { position: relative; z-index: 2; }
+
+.c3 { grid-column: span 3; } .c4 { grid-column: span 4; }
+.c5 { grid-column: span 5; } .c6 { grid-column: span 6; }
+.c7 { grid-column: span 7; } .c8 { grid-column: span 8; }
+@media (max-width: 900px) {
+  .bento { grid-template-columns: 1fr; }
+  .c3,.c4,.c5,.c6,.c7,.c8 { grid-column: span 1; }
+  .tile-photo { min-height: 280px; }
+}
+
+/* ---- the space: full-bleed band + hairline amenity grid -------------- */
+
+.band { position: relative; min-height: clamp(420px, 56vw, 640px); display: grid; align-items: end; overflow: hidden; }
+.band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.band::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(14,42,33,0.55) 0%, rgba(8,24,19,0.55) 40%, rgba(8,24,19,0.95) 100%);
+}
+.band-in { position: relative; z-index: 2; padding-block: clamp(40px, 5vw, 72px); }
+.band-in .h-sec { max-width: 20ch; }
+.band-in .lede { margin-top: 22px; }
+.band-in .btn { margin-top: 30px; }
+
+.amen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--line); }
+.amen-i { padding: 34px clamp(16px,2.4vw,32px) 38px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.amen-i:nth-child(3n) { border-right: none; }
+.amen-t { font-family: var(--display); font-size: 22px; color: var(--cream); }
+.amen-b { margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--body); max-width: 32ch; }
+@media (max-width: 820px) {
+  .amen { grid-template-columns: 1fr 1fr; }
+  .amen-i:nth-child(3n) { border-right: 1px solid var(--line); }
+  .amen-i:nth-child(2n) { border-right: none; }
+}
+@media (max-width: 520px) {
+  .amen { grid-template-columns: 1fr; }
+  .amen-i, .amen-i:nth-child(3n) { border-right: none; }
+}
+
+/* ---- gallery: native scroll-snap track ------------------------------- */
+
+.gal-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+.gal-nav { display: flex; gap: 10px; flex: none; }
+.gal-btn {
+  width: 50px; height: 50px; border: 1px solid var(--line-2); background: transparent;
+  color: var(--cream); font-size: 18px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  transition: background 200ms var(--ease), border-color 200ms var(--ease), color 200ms var(--ease);
+}
+.gal-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+
+.track {
+  display: flex; gap: 2px;
+  overflow-x: auto; overflow-y: hidden;   /* hidden, or the wheel is trapped here */
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; -ms-overflow-style: none;
+  padding-inline: var(--pad); scroll-padding-left: var(--pad);
+}
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 min(680px, 84vw); scroll-snap-align: start; }
+.slide-img { aspect-ratio: 4/3; overflow: hidden; background: var(--raised); }
+.slide-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slide-cap { display: flex; align-items: baseline; gap: 12px; margin-top: 14px; padding-bottom: 4px; }
+.slide-t { font-family: var(--display); font-size: 19px; color: var(--cream); }
+.slide-n { font-size: 13px; color: var(--body); }
+
+/* ---- availability ---------------------------------------------------- */
+
+.avail { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(36px, 4.5vw, 72px); align-items: start; }
+.avail-side { position: sticky; top: 100px; }
+.avail-side .lede { margin-top: 20px; }
+
+.status { margin-top: 30px; padding: 26px 28px; background: var(--raised); border: 1px solid var(--line); }
+.status-l { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--body); }
+.status-d { font-family: var(--display); font-size: 27px; line-height: 1.2; color: var(--cream); margin-top: 10px; }
+.status-n { margin-top: 10px; font-size: 14.5px; line-height: 1.6; }
+.status .btn { margin-top: 20px; }
+
+.legend { display: flex; gap: 22px; margin-top: 20px; font-size: 13px; color: var(--body); }
+.legend span { display: inline-flex; align-items: center; gap: 9px; }
+
+/* Status markers differ by SHAPE as well as colour, so the calendar does
+   not depend on colour alone (WCAG 1.4.1). Open is an open ring, booked is
+   a solid bar, the chosen day is a filled disc. */
+.mk { display: block; flex: none; }
+.mk-open   { width: 7px; height: 7px; border-radius: 100px; border: 1px solid currentColor; background: transparent; }
+.mk-booked { width: 10px; height: 2.5px; background: currentColor; }
+.mk-sel    { width: 7px; height: 7px; border-radius: 100px; background: currentColor; }
+
+.cal { padding: clamp(20px, 2.6vw, 32px); background: var(--raised); border: 1px solid var(--line); }
+.cal-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.cal-m { font-family: var(--display); font-size: 26px; color: var(--cream); }
+.cal-btn {
+  width: 42px; height: 42px; border: 1px solid var(--line-2); background: transparent;
+  color: var(--cream); cursor: pointer; font-size: 16px;
+  transition: background 200ms var(--ease), border-color 200ms var(--ease), color 200ms var(--ease);
+}
+.cal-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-wd { text-align: center; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--body); padding-bottom: 8px; }
+.day {
+  aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 6px; font-family: var(--sans); font-size: 15px;
+  font-weight: 500; background: transparent; border: 1px solid var(--line);
+  color: var(--cream); cursor: pointer;
+  transition: background 180ms var(--ease), border-color 180ms var(--ease), color 180ms var(--ease);
+}
+.day:hover:not(.day-past):not(.day-empty) { border-color: var(--gold); }
+.day-past { cursor: default; opacity: 0.3; border-color: transparent; }
+.day-empty { border-color: transparent; cursor: default; }
+.day-booked { color: var(--warn); border-color: rgba(224,138,114,0.32); background: rgba(224,138,114,0.07); }
+.day-sel { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+
+@media (max-width: 900px) {
+  .avail { grid-template-columns: 1fr; }
+  .avail-side { position: static; }
+}
+
+/* ---- contact: three channel rows ------------------------------------- */
+
+.chan { border-top: 1px solid var(--line); }
+.chan-row {
+  display: grid; grid-template-columns: 150px 1fr auto; align-items: center;
+  gap: clamp(16px, 3vw, 40px);
+  padding: clamp(26px, 3.4vw, 42px) 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left 300ms var(--ease);
+}
+.chan-row:hover { padding-left: 14px; }
+.chan-k { font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-lt); }
+/* both are spans inside one grid cell, so they need blockifying to stack */
+.chan-v { display: block; font-family: var(--display); font-size: clamp(26px, 3.6vw, 44px); line-height: 1.15; color: var(--cream); overflow-wrap: anywhere; }
+.chan-row:hover .chan-v { color: var(--gold-lt); }
+.chan-s { display: block; font-size: 13.5px; color: var(--body); margin-top: 8px; }
+.chan-a { font-size: 22px; color: var(--gold); flex: none; transition: transform 300ms var(--ease); }
+.chan-row:hover .chan-a { transform: translateX(6px); }
+@media (max-width: 760px) {
+  .chan-row { grid-template-columns: 1fr auto; gap: 10px 16px; }
+  .chan-k { grid-column: 1 / -1; }
+}
+
+/* ---- footer ---------------------------------------------------------- */
+
+.ft { background: var(--ink); border-top: 1px solid var(--line); }
+.ft-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: clamp(32px, 4vw, 64px); padding-block: clamp(56px, 6vw, 84px) 40px; }
+.ft-h { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-lt); margin-bottom: 16px; }
+.ft-col a, .ft-col div { display: block; font-size: 15.5px; line-height: 1.7; color: var(--body); }
+.ft-col a:hover { color: var(--gold-lt); }
+.ft-bar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-block: 22px 34px; border-top: 1px solid var(--line); font-size: 13px; color: var(--faint); }
+.ft-bar button { background: none; border: none; padding: 0; font-family: var(--sans); font-size: 13px; color: var(--faint); cursor: pointer; }
+.ft-bar button:hover { color: var(--gold-lt); }
+@media (max-width: 820px) { .ft-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .ft-grid { grid-template-columns: 1fr; } }
+
+/* ---- staff drawer ---------------------------------------------------- */
+
+.mubny-drawer {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(4,12,9,0.66); backdrop-filter: blur(6px);
+  display: none; justify-content: flex-end;
+}
+.mubny-drawer.is-open { display: flex; }
+.dw { width: min(560px, 100%); height: 100%; background: var(--canvas); border-left: 1px solid var(--line-2); display: flex; flex-direction: column; overflow-y: auto; }
+.dw-top { display: flex; align-items: center; justify-content: space-between; padding: 24px 30px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--canvas); z-index: 2; }
+.dw-in {
+  width: 100%; padding: 14px 16px; background: var(--raised);
+  border: 1px solid var(--line-2); color: var(--cream);
+  font-family: var(--sans); font-size: 15px;
+}
+.dw-in::placeholder { color: var(--body); }   /* 6.6:1 on raised */
+.dw-in:focus { outline: 2px solid var(--gold-lt); outline-offset: 2px; }
+.dw-lab { font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-lt); }
+.dw-row { display: flex; align-items: center; gap: 16px; padding: 15px 18px; background: var(--raised); border: 1px solid var(--line); }
+.dw-x { width: 32px; height: 32px; border: 1px solid var(--line-2); background: transparent; color: var(--body); cursor: pointer; font-size: 13px; flex: none; }
+.dw-x:hover { background: var(--warn); border-color: var(--warn); color: var(--ink); }
+.dw-err { font-size: 13px; color: var(--warn); min-height: 18px; }
+
+/* ---- scroll reveal --------------------------------------------------- */
+/* Motivated: sections arrive in reading order so the eye lands on the
+   headline before the supporting grid. IntersectionObserver only, never a
+   scroll listener. Collapses to fully-visible under reduced motion. */
+
+/* Content is visible by default. It is only hidden once the script has
+   confirmed it is running and has an observer attached, so a JS failure or a
+   missed intersection can never leave a section blank. */
+.rv-on .rv { opacity: 0; transform: translateY(18px); }
+.rv-on .rv.in { opacity: 1; transform: none; transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv, .rv.in { opacity: 1 !important; transform: none !important; transition: none !important; }
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  .tile-photo:hover img { transform: none; }
+}
 </style>
 </helmet>
 
-<div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif; color:#12261F; background:transparent; overflow-x:hidden">
+<div class="page">
 
-  <header style="position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px clamp(14px,3vw,24px); padding:14px clamp(18px,4.5vw,40px); background:rgba(247,243,236,0.86); backdrop-filter:blur(12px); border-bottom:1px solid rgba(18,38,31,0.08)">
-    <a href="#top" style="display:flex; align-items:center; gap:12px">
-      <span style="display:block; position:relative; width:48px; height:41px; overflow:hidden; flex:none">
-        <img src="./mubny-logo.png" alt="MUBNY Events and Banquets" style="position:absolute; width:62px; height:62px; left:-7px; top:-2px">
-      </span>
-      <span style="display:flex; flex-direction:column; line-height:1">
-        <span style="font-family:'Instrument Serif',serif; font-size:21px; letter-spacing:0.14em; color:#14483A">MUBNY</span>
-        <span style="font-size:8.5px; letter-spacing:0.26em; text-transform:uppercase; color:#8A6A2A; margin-top:5px">Events and Banquets</span>
+  <header class="hdr">
+    <a href="#top" class="lockup">
+      <span class="lockup-img"><img src="./mubny-logo.png" alt="MUBNY Events and Banquets"></span>
+      <span style="display:flex; flex-direction:column">
+        <span class="lockup-name">MUBNY</span>
+        <span class="lockup-sub">Events and Banquets</span>
       </span>
     </a>
-    <nav style="display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-start; gap:clamp(12px,2.4vw,32px); font-size:14px">
-      <a href="#space" style="font-size:14px; color:#3E5249">The Space</a>
-      <a href="#events" style="font-size:14px; color:#3E5249">Events</a>
-      <a href="#gallery" style="font-size:14px; color:#3E5249">Gallery</a>
-      <a href="#availability" style="font-size:14px; color:#3E5249">Availability</a>
-      <a href="#rates" style="font-size:14px; color:#3E5249">Rates</a>
-      <a href="tel:+17169516433" style="display:inline-flex; align-items:center; gap:8px; padding:11px 20px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:14px; font-weight:600" style-hover="background:#B98A3C; color:#12261F">(716) 951-6433</a>
+    <nav class="nav">
+      <span class="nav-links">
+        <a href="#space">The Space</a>
+        <a href="#events">Events</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#availability">Dates</a>
+      </span>
+      <a href="tel:+17169516433" class="btn btn-gold">(716) 951-6433</a>
     </nav>
   </header>
 
-  <section id="top" class="mch-hero" style="position:relative; padding:96px clamp(18px,4.5vw,40px) 80px; display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:64px; align-items:center; max-width:1360px; margin:0 auto">
-    <div style="animation: riseIn 700ms ease both">
-      <div style="display:inline-flex; align-items:center; gap:10px; padding:7px 14px 7px 10px; border:1px solid rgba(185,138,60,0.45); border-radius:100px; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#8A6A2A; margin-bottom:28px">
-        <span style="color:#B98A3C; font-size:13px">★★★★★</span> Buffalo's community venue
-      </div>
-      <h1 style="font-family:'Instrument Serif',serif; font-size:clamp(40px,7.2vw,76px); line-height:1.02; letter-spacing:-0.02em; margin:0 0 24px; color:#12261F; text-wrap:balance">A hall built for<br><em style="color:#14483A">gathering well.</em></h1>
-      <p style="font-size:18px; line-height:1.65; color:#4A5D54; max-width:52ch; margin:0 0 36px; text-wrap:pretty">5,000 square feet of open, fully furnished event space on Clinton Street — ready for your wedding reception, celebration, fundraiser or program. Tables and chairs included, 70+ parking spaces out front.</p>
-      <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center">
-        <a href="tel:+17169516433" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:15px; font-weight:600" style-hover="background:#0E3428">Call to book</a>
-        <a href="mailto:mubny.events@gmail.com" style="display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:100px; border:1px solid rgba(18,38,31,0.18); color:#12261F; font-size:15px; font-weight:600" style-hover="border-color:#14483A; background:rgba(20,72,58,0.05)">Email us</a>
+  <!-- HERO: asymmetric split. Four text elements exactly: eyebrow, headline,
+       lede, CTA pair. The stat strip lives in its own section below. -->
+  <section id="top" class="shell hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span style="color:var(--gold); font-size:12px; letter-spacing:0.1em">★★★★★</span> Buffalo's community venue</div>
+      <h1>A hall built for<br><em>gathering well.</em></h1>
+      <p class="lede">5,000 square feet of open, fully furnished event space on Clinton Street, ready for whatever you are hosting.</p>
+      <div class="hero-cta">
+        <a href="tel:+17169516433" class="btn btn-gold">Call to book</a>
+        <a href="sms:+17169516433" class="btn btn-ghost">Text us</a>
       </div>
     </div>
-    <div class="mch-hero-media" style="position:relative; aspect-ratio:4/5; border-radius:999px 999px 22px 22px; overflow:hidden; background:#EAE2D5; border:1px solid rgba(18,38,31,0.1)">
-      <img src="./photos/table-detail.jpg" alt="Close view of a set table with gold runner and floral centerpiece" style="width:100%; height:100%; object-fit:cover; display:block">
+    <div class="hero-media">
+      <div class="arch">
+        <img src="./photos/table-detail.jpg" width="1200" height="1600" fetchpriority="high" decoding="async"
+             alt="A set table with a gold runner and floral centerpiece">
+      </div>
     </div>
   </section>
 
-  <section style="border-top:1px solid rgba(18,38,31,0.1); border-bottom:1px solid rgba(18,38,31,0.1); background:#F1EBE0">
-    <div style="max-width:1360px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+  <section class="shell">
+    <div class="stats">
       <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
-        <div style="padding:38px clamp(18px,4.5vw,40px); border-right:1px solid rgba(18,38,31,0.09)">
-          <div style="font-family:'Instrument Serif',serif; font-size:46px; line-height:1; color:#14483A">{{ s.value }}</div>
-          <div style="margin-top:10px; font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase; color:#7A8A82">{{ s.label }}</div>
+        <div class="stat">
+          <div class="stat-v">{{ s.value }}</div>
+          <div class="stat-l">{{ s.label }}</div>
         </div>
       </sc-for>
     </div>
   </section>
 
-  <section id="events" style="max-width:1360px; margin:0 auto; padding:104px clamp(18px,4.5vw,40px) 88px">
-    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:clamp(16px,3vw,40px); margin-bottom:48px">
-      <div>
-        <div style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:#B98A3C; margin-bottom:16px">What happens here</div>
-        <h2 style="font-family:'Instrument Serif',serif; font-size:clamp(31px,4.8vw,52px); line-height:1.08; margin:0; letter-spacing:-0.015em; max-width:16ch">Room enough for the whole community</h2>
-      </div>
-      <p style="font-size:16px; line-height:1.7; color:#4A5D54; max-width:34ch; margin:0">One open floor, arranged however your evening needs it — banquet rounds, long tables, or rows facing a podium.</p>
+  <!-- EVENTS: asymmetric bento. Five things we host, five cells, no filler.
+       Two cells carry real photography so the grid is not six text boxes. -->
+  <section id="events" class="shell sec">
+    <div class="sec-head rv">
+      <div class="rule"></div>
+      <h2 class="display h-sec">Room enough for the whole community</h2>
+      <p class="lede">One open floor, arranged however your evening needs it. Banquet rounds, long tables, or rows facing a podium.</p>
     </div>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:16px">
-      <sc-for list="{{ events }}" as="e" hint-placeholder-count="5">
-        <div style="padding:28px 24px 32px; border-radius:18px; background:#fff; border:1px solid rgba(18,38,31,0.08); display:flex; flex-direction:column; gap:16px; min-height:220px" style-hover="border-color:#B98A3C; transform:translateY(-3px)">
-          <div style="width:38px; height:38px; border-radius:10px; background:rgba(20,72,58,0.07); display:flex; align-items:center; justify-content:center; font-family:'Instrument Serif',serif; color:#14483A; font-size:17px">{{ e.n }}</div>
-          <div style="font-family:'Instrument Serif',serif; font-size:25px; line-height:1.15; color:#12261F; margin-top:auto">{{ e.title }}</div>
-          <div style="font-size:13.5px; line-height:1.55; color:#6B7C74">{{ e.note }}</div>
-        </div>
-      </sc-for>
+    <div class="bento rv">
+      <div class="tile tile-photo c5">
+        <img src="./photos/hall-panorama-web.jpg" width="1600" height="900" loading="lazy" decoding="async"
+             alt="The vaulted hall interior, arched ceiling above rows of banquet tables">
+        <div class="tile-t">Wedding Receptions</div>
+        <div class="tile-n">The whole celebration under one roof: ceremony, dinner and dancing.</div>
+      </div>
+      <div class="tile c4">
+        <div class="tile-t">Milestone Celebrations</div>
+        <div class="tile-n">Birthdays, anniversaries, graduations, showers and reunions.</div>
+      </div>
+      <div class="tile c3">
+        <div class="tile-t">Meetings &amp; Programs</div>
+        <div class="tile-n">Rows, a podium and open floor for lectures, trainings and panels.</div>
+      </div>
+      <div class="tile c4">
+        <div class="tile-t">Corporate &amp; Fundraising</div>
+        <div class="tile-n">Galas, conferences, award nights and nonprofit banquets.</div>
+      </div>
+      <div class="tile tile-photo c8">
+        <img src="./photos/banquet-rounds.jpg" width="1600" height="1200" loading="lazy" decoding="async"
+             alt="Round tables with white linens, navy chairs and crystal centerpieces">
+        <div class="tile-t">Cultural &amp; Faith Gatherings</div>
+        <div class="tile-n">Holiday dinners, iftars and religious programs. Every community is welcome here.</div>
+      </div>
     </div>
   </section>
 
-  <section id="space" style="background:#14483A; color:#F1EBE0">
-    <div style="max-width:1360px; margin:0 auto; padding:104px clamp(18px,4.5vw,40px); display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:80px; align-items:center">
-      <div>
-        <div style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:#B98A3C; margin-bottom:16px">The space</div>
-        <h2 style="font-family:'Instrument Serif',serif; font-size:clamp(31px,4.8vw,52px); line-height:1.08; margin:0 0 24px; letter-spacing:-0.015em; color:#FBF8F2">Turn up and host. Everything else is already here.</h2>
-        <p style="font-size:17px; line-height:1.7; color:rgba(241,235,224,0.72); margin:0 0 36px; max-width:46ch">The hall comes fully furnished with tables and chairs, so there's no rental run the day before. Bring your caterer, your program, your family.</p>
-        <a href="#availability" style="display:inline-flex; padding:15px 26px; border-radius:100px; background:#B98A3C; color:#12261F; font-weight:600; font-size:15px" style-hover="background:#F1EBE0">Check a date</a>
+  <!-- THE SPACE: full-bleed band, then a hairline amenity grid. -->
+  <section id="space">
+    <div class="band">
+      <img src="./photos/stage-decor-web.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="A draped stage backdrop set with florals and soft uplighting">
+      <div class="band-in shell rv">
+        <h2 class="display h-sec">Turn up and host. Everything else is already here.</h2>
+        <p class="lede">The hall comes fully furnished with tables and chairs, so there is no rental run the day before. Bring your caterer, your program, your family.</p>
+        <a href="#availability" class="btn btn-gold">Check a date</a>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(241,235,224,0.18); border:1px solid rgba(241,235,224,0.18); border-radius:20px; overflow:hidden">
+    </div>
+    <div class="shell">
+      <div class="amen">
         <sc-for list="{{ amenities }}" as="a" hint-placeholder-count="6">
-          <div style="background:#14483A; padding:30px 28px">
-            <div style="font-family:'Instrument Serif',serif; font-size:22px; color:#FBF8F2; margin-bottom:8px">{{ a.title }}</div>
-            <div style="font-size:13.5px; line-height:1.6; color:rgba(241,235,224,0.62)">{{ a.body }}</div>
+          <div class="amen-i">
+            <div class="amen-t">{{ a.title }}</div>
+            <div class="amen-b">{{ a.body }}</div>
           </div>
         </sc-for>
       </div>
     </div>
   </section>
 
-  <section id="gallery" style="padding:104px 0">
-    <div style="max-width:1360px; margin:0 auto; padding:0 clamp(18px,4.5vw,40px); display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:36px">
-      <div>
-        <div style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:#B98A3C; margin-bottom:16px">The venue</div>
-        <h2 style="font-family:'Instrument Serif',serif; font-size:clamp(31px,4.8vw,52px); line-height:1.08; margin:0; letter-spacing:-0.015em">Our space</h2>
-      </div>
-      <div style="display:flex; align-items:center; gap:12px">
-        <button onClick="{{ prev }}" aria-label="Previous photo" style="width:52px; height:52px; border-radius:100px; border:1px solid rgba(18,38,31,0.18); background:transparent; color:#12261F; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center" style-hover="background:#14483A; color:#F7F3EC; border-color:#14483A">←</button>
-        <button onClick="{{ next }}" aria-label="Next photo" style="width:52px; height:52px; border-radius:100px; border:1px solid rgba(18,38,31,0.18); background:transparent; color:#12261F; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center" style-hover="background:#14483A; color:#F7F3EC; border-color:#14483A">→</button>
+  <!-- GALLERY: native scroll-snap track, so a finger swipe works on a phone
+       and the arrows are a desktop convenience rather than the only way in. -->
+  <section id="gallery" class="sec">
+    <div class="shell gal-head rv">
+      <h2 class="display h-sec">Our space</h2>
+      <div class="gal-nav">
+        <button onClick="{{ prev }}" class="gal-btn" aria-label="Previous photo">&#8592;</button>
+        <button onClick="{{ next }}" class="gal-btn" aria-label="Next photo">&#8594;</button>
       </div>
     </div>
-
-    <div style="overflow:hidden; padding:0 clamp(18px,4.5vw,40px)">
-      <div style="max-width:1360px; margin:0 auto">
-        <div style="display:flex; gap:20px; will-change:transform; transition:transform 620ms cubic-bezier(0.4,0,0.15,1); transform:translateX({{ shift }})">
-          <sc-for list="{{ photos }}" as="p" hint-placeholder-count="4">
-            <div style="flex:0 0 min(620px, 82vw)">
-              <div style="aspect-ratio:4/3; border-radius:20px; overflow:hidden; background:#EAE2D5; border:1px solid rgba(18,38,31,0.1)">
-                <img src="{{ p.src }}" alt="{{ p.alt }}" style="width:100%; height:100%; object-fit:cover; display:block">
-              </div>
-              <div style="display:flex; align-items:baseline; gap:12px; margin-top:16px">
-                <span style="font-family:'Instrument Serif',serif; font-size:20px; color:#12261F">{{ p.title }}</span>
-                <span style="font-size:13px; color:#7A8A82">{{ p.note }}</span>
-              </div>
-            </div>
-          </sc-for>
+    <div class="track" id="gal-track" tabindex="0" aria-label="Photos of the hall">
+      <sc-for list="{{ photos }}" as="p" hint-placeholder-count="5">
+        <div class="slide">
+          <div class="slide-img"><img src="{{ p.src }}" alt="{{ p.alt }}" loading="lazy" decoding="async"></div>
+          <div class="slide-cap">
+            <span class="slide-t">{{ p.title }}</span>
+            <span class="slide-n">{{ p.note }}</span>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <div style="max-width:1360px; margin:28px auto 0; padding:0 clamp(18px,4.5vw,40px); display:flex; gap:8px">
-      <sc-for list="{{ dots }}" as="d" hint-placeholder-count="4">
-        <button onClick="{{ d.go }}" aria-label="Go to photo" style="width:{{ d.width }}; height:6px; border-radius:100px; border:none; padding:0; cursor:pointer; transition:all 400ms ease; background:{{ d.color }}"></button>
       </sc-for>
     </div>
   </section>
 
-  <section id="availability" style="max-width:1360px; margin:0 auto; padding:0 clamp(18px,4.5vw,40px) 104px">
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:64px; align-items:start">
-      <div style="position:sticky; top:110px">
-        <div style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:#B98A3C; margin-bottom:16px">Availability</div>
-        <h2 style="font-family:'Instrument Serif',serif; font-size:clamp(31px,4.8vw,52px); line-height:1.08; margin:0 0 20px; letter-spacing:-0.015em; max-width:15ch">Pick a date, see if it's open</h2>
-        <p style="font-size:17px; line-height:1.7; color:#4A5D54; margin:0 0 28px; max-width:44ch">Dates already booked are marked. Choosing an open date doesn't hold it — give us a call and we'll confirm.</p>
+  <!-- AVAILABILITY: kept, because "is my date free?" is the question that
+       precedes the phone call. Status is carried by shape as well as colour. -->
+  <section id="availability" class="shell sec">
+    <div class="avail">
+      <div class="avail-side rv">
+        <div class="rule"></div>
+        <h2 class="display h-sec" style="max-width:15ch; margin-top:22px">Pick a date, see if it's open</h2>
+        <p class="lede">Dates already booked are marked. Choosing an open date does not hold it, so give us a call and we will confirm.</p>
 
-        <div style="padding:24px 26px; border-radius:20px; background:#fff; border:1px solid rgba(18,38,31,0.1)">
-          <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#7A8A82; margin-bottom:10px">Selected</div>
-          <div style="font-family:'Instrument Serif',serif; font-size:28px; line-height:1.2; color:#12261F">{{ selectedLabel }}</div>
-          <div style="margin-top:10px; font-size:14.5px; line-height:1.6; color:{{ selectedColor }}">{{ selectedNote }}</div>
-          <a href="tel:+17169516433" style="display:inline-flex; margin-top:18px; padding:13px 22px; border-radius:100px; background:#14483A; color:#F7F3EC; font-size:14px; font-weight:600" style-hover="background:#0E3428">Call to confirm</a>
+        <div class="status">
+          <div class="status-l">Selected</div>
+          <div class="status-d">{{ selectedLabel }}</div>
+          <div class="status-n" style="color:{{ selectedColor }}">{{ selectedNote }}</div>
+          <a href="tel:+17169516433" class="btn btn-gold">Call to confirm</a>
         </div>
 
-        <div style="display:flex; gap:20px; margin-top:22px; font-size:13px; color:#6B7C74">
-          <span style="display:inline-flex; align-items:center; gap:8px"><span style="width:10px; height:10px; border-radius:100px; background:#14483A"></span>Open</span>
-          <span style="display:inline-flex; align-items:center; gap:8px"><span style="width:10px; height:10px; border-radius:100px; background:#C2543F"></span>Booked</span>
+        <div class="legend">
+          <span style="color:var(--body)"><i class="mk mk-open"></i>Open</span>
+          <span style="color:var(--warn)"><i class="mk mk-booked"></i>Booked</span>
         </div>
       </div>
 
-      <div style="padding:32px; border-radius:24px; background:#F1EBE0; border:1px solid rgba(18,38,31,0.1)">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px">
-          <button onClick="{{ prevMonth }}" aria-label="Previous month" style="width:44px; height:44px; border-radius:100px; border:1px solid rgba(18,38,31,0.16); background:transparent; cursor:pointer; font-size:17px; color:#12261F" style-hover="background:#14483A; color:#F7F3EC; border-color:#14483A">←</button>
-          <div style="font-family:'Instrument Serif',serif; font-size:28px; color:#12261F">{{ monthLabel }}</div>
-          <button onClick="{{ nextMonth }}" aria-label="Next month" style="width:44px; height:44px; border-radius:100px; border:1px solid rgba(18,38,31,0.16); background:transparent; cursor:pointer; font-size:17px; color:#12261F" style-hover="background:#14483A; color:#F7F3EC; border-color:#14483A">→</button>
+      <div class="cal">
+        <div class="cal-top">
+          <button onClick="{{ prevMonth }}" class="cal-btn" aria-label="Previous month">&#8592;</button>
+          <div class="cal-m">{{ monthLabel }}</div>
+          <button onClick="{{ nextMonth }}" class="cal-btn" aria-label="Next month">&#8594;</button>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:8px">
+        <div class="cal-grid" style="margin-bottom:6px">
           <sc-for list="{{ weekdays }}" as="w" hint-placeholder-count="7">
-            <div style="text-align:center; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#8A9A92; padding-bottom:6px">{{ w }}</div>
+            <div class="cal-wd">{{ w }}</div>
           </sc-for>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px">
+        <div class="cal-grid">
           <sc-for list="{{ cells }}" as="c" hint-placeholder-count="35">
-            <button onClick="{{ c.click }}" title="{{ c.title }}" style="aspect-ratio:1/1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; border-radius:14px; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:500; transition:all 180ms ease; background:{{ c.bg }}; color:{{ c.color }}; border:1px solid {{ c.border }}; cursor:{{ c.cursor }}; opacity:{{ c.opacity }}">
+            <button onClick="{{ c.click }}" class="day {{ c.cls }}" aria-label="{{ c.aria }}" title="{{ c.aria }}" tabindex="{{ c.tab }}" aria-hidden="{{ c.hide }}">
               <span>{{ c.day }}</span>
-              <span style="width:5px; height:5px; border-radius:100px; background:{{ c.dot }}"></span>
+              <i class="mk {{ c.mk }}"></i>
             </button>
           </sc-for>
         </div>
@@ -447,122 +884,139 @@
     </div>
   </section>
 
-  <section id="rates" style="max-width:1360px; margin:0 auto; padding:0 clamp(18px,4.5vw,40px) 104px">
-    <div style="border-radius:28px; background:#F1EBE0; border:1px solid rgba(18,38,31,0.1); padding:clamp(36px,6vw,72px) clamp(24px,5vw,64px); display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:40px; align-items:center">
-      <div>
-        <div style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:#B98A3C; margin-bottom:16px">Rates coming soon</div>
-        <h2 style="font-family:'Instrument Serif',serif; font-size:48px; line-height:1.1; margin:0 0 18px; letter-spacing:-0.015em; max-width:20ch">Flat-rate packages are being finalized</h2>
-        <p style="font-size:17px; line-height:1.7; color:#4A5D54; margin:0; max-width:50ch">Give us a call for current pricing and availability. We'll walk you through the date, the setup and what's included.</p>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:12px; min-width:280px">
-        <a href="tel:+17169516433" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#14483A; color:#F7F3EC" style-hover="background:#0E3428">
-          <span style="font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(247,243,236,0.6)">Call</span>
-          <span style="font-family:'Instrument Serif',serif; font-size:30px">(716) 951-6433</span>
-        </a>
-        <a href="tel:+17165909129" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#fff; border:1px solid rgba(18,38,31,0.1); color:#12261F" style-hover="border-color:#B98A3C">
-          <span style="font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8A6A2A">Or call</span>
-          <span style="font-family:'Instrument Serif',serif; font-size:30px">(716) 590-9129</span>
-        </a>
-        <a href="mailto:mubny.events@gmail.com" style="display:flex; flex-direction:column; gap:4px; padding:22px 28px; border-radius:18px; background:#fff; border:1px solid rgba(18,38,31,0.1); color:#12261F" style-hover="border-color:#B98A3C">
-          <span style="font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:#7A8A82">Email</span>
-          <span style="font-size:16px; font-weight:600">mubny.events@gmail.com</span>
-        </a>
-      </div>
+  <!-- CONTACT: replaces the old rates block. One channel per row, each row is
+       the link itself, so the whole strip is a target on a phone.
+       The old #rates anchor is kept alive here so existing links still land. -->
+  <span id="rates" aria-hidden="true"></span>
+  <section id="contact" class="shell sec" style="padding-top:0">
+    <div class="sec-head rv">
+      <div class="rule"></div>
+      <h2 class="display h-sec">Tell us about your event</h2>
+      <p class="lede">Call, text or email and we will walk you through the date, the setup and what it costs.</p>
+    </div>
+    <div class="chan rv">
+      <a class="chan-row" href="tel:+17169516433">
+        <span class="chan-k">Call</span>
+        <span>
+          <span class="chan-v">(716) 951-6433</span>
+          <span class="chan-s">Second line: (716) 590-9129</span>
+        </span>
+        <span class="chan-a">&#8594;</span>
+      </a>
+      <a class="chan-row" href="sms:+17169516433">
+        <span class="chan-k">Text</span>
+        <span>
+          <span class="chan-v">(716) 951-6433</span>
+          <span class="chan-s">Send the date and roughly how many guests</span>
+        </span>
+        <span class="chan-a">&#8594;</span>
+      </a>
+      <a class="chan-row" href="mailto:mubny.events@gmail.com">
+        <span class="chan-k">Email</span>
+        <span>
+          <span class="chan-v">mubny.events@gmail.com</span>
+          <span class="chan-s">We reply within a day</span>
+        </span>
+        <span class="chan-a">&#8594;</span>
+      </a>
     </div>
   </section>
 
-  <footer style="background:#12261F; color:#F1EBE0">
-    <div style="max-width:1360px; margin:0 auto; padding:80px clamp(18px,4.5vw,40px) 40px; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:56px">
+  <footer class="ft">
+    <div class="shell ft-grid">
       <div>
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px">
-          <span style="display:block; position:relative; width:44px; height:38px; overflow:hidden; flex:none">
-        <img src="./mubny-logo.png" alt="MUBNY Events and Banquets" style="position:absolute; width:57px; height:57px; left:-6px; top:-2px">
-      </span>
-          <span style="display:flex; flex-direction:column; line-height:1">
-            <span style="font-family:'Instrument Serif',serif; font-size:24px; letter-spacing:0.14em; color:#FBF8F2">MUBNY</span>
-            <span style="font-size:9px; letter-spacing:0.26em; text-transform:uppercase; color:#B98A3C; margin-top:6px">Events and Banquets</span>
+        <div class="lockup" style="margin-bottom:18px">
+          <span class="lockup-img"><img src="./mubny-logo.png" alt="MUBNY Events and Banquets"></span>
+          <span style="display:flex; flex-direction:column">
+            <span class="lockup-name" style="font-size:24px">MUBNY</span>
+            <span class="lockup-sub">Events and Banquets</span>
           </span>
         </div>
-        <p style="font-size:15px; line-height:1.7; color:rgba(241,235,224,0.6); margin:0; max-width:34ch">A welcoming space for Buffalo's families and community organizations.</p>
+        <p style="font-size:15px; line-height:1.7; color:var(--body); margin:0; max-width:34ch">A welcoming space for Buffalo's families and community organizations.</p>
       </div>
-      <div style="display:flex; flex-direction:column; gap:14px">
-        <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#B98A3C">Visit</div>
-        <div style="font-size:16px; line-height:1.6; color:#F1EBE0">2010 Clinton St<br>Buffalo, NY 14206</div>
-        <a href="https://maps.google.com/?q=2010+Clinton+St+Buffalo+NY+14206" style="font-size:14px; color:rgba(241,235,224,0.65)" style-hover="color:#B98A3C">Get directions →</a>
+      <div class="ft-col">
+        <div class="ft-h">Visit</div>
+        <div>2010 Clinton St<br>Buffalo, NY 14206</div>
+        <a href="https://maps.google.com/?q=2010+Clinton+St+Buffalo+NY+14206" style="margin-top:10px">Get directions &#8594;</a>
       </div>
-      <div style="display:flex; flex-direction:column; gap:14px">
-        <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#B98A3C">Contact</div>
-        <a href="tel:+17169516433" style="font-size:16px; color:#F1EBE0" style-hover="color:#B98A3C">(716) 951-6433</a>
-        <a href="tel:+17165909129" style="font-size:16px; color:#F1EBE0" style-hover="color:#B98A3C">(716) 590-9129</a>
-        <a href="mailto:mubny.events@gmail.com" style="font-size:13.5px; color:rgba(241,235,224,0.65); overflow-wrap:anywhere" style-hover="color:#B98A3C">mubny.events@gmail.com</a>
+      <div class="ft-col">
+        <div class="ft-h">Contact</div>
+        <a href="tel:+17169516433">(716) 951-6433</a>
+        <a href="tel:+17165909129">(716) 590-9129</a>
+        <a href="mailto:mubny.events@gmail.com" style="overflow-wrap:anywhere">mubny.events@gmail.com</a>
       </div>
     </div>
-    <div style="max-width:1360px; margin:0 auto; padding:24px clamp(18px,4.5vw,40px) 40px; border-top:1px solid rgba(241,235,224,0.12); display:flex; justify-content:space-between; align-items:center; gap:24px; font-size:13px; color:rgba(241,235,224,0.42)">
-      <span>© 2026 MUBNY Events and Banquets</span>
-      <button onClick="{{ openDash }}" style="background:none; border:none; padding:0; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; color:rgba(241,235,224,0.42); cursor:pointer" style-hover="color:#B98A3C">Staff dashboard</button>
+    <div class="shell ft-bar">
+      <span>&copy; 2026 MUBNY Events and Banquets</span>
+      <button onClick="{{ openDash }}">Staff dashboard</button>
     </div>
   </footer>
 
   <div class="mubny-drawer {{ dashClass }}">
-      <div style="width:min(560px,100%); height:100%; background:#F7F3EC; border-left:1px solid rgba(18,38,31,0.12); display:flex; flex-direction:column; overflow-y:auto">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:26px 32px; border-bottom:1px solid rgba(18,38,31,0.1); position:sticky; top:0; background:#F7F3EC; z-index:2">
-          <div>
-            <div style="font-family:'Instrument Serif',serif; font-size:26px; color:#12261F">Reservations</div>
-            <div style="font-size:12.5px; color:#7A8A82; margin-top:3px">{{ countLabel }}</div>
-          </div>
-          <button onClick="{{ closeDash }}" aria-label="Close" style="width:40px; height:40px; border-radius:100px; border:1px solid rgba(18,38,31,0.16); background:transparent; cursor:pointer; font-size:17px; color:#12261F" style-hover="background:#12261F; color:#F7F3EC">✕</button>
+    <div class="dw">
+      <div class="dw-top">
+        <div>
+          <div class="display" style="font-size:25px">Reservations</div>
+          <div style="font-size:12.5px; color:var(--body); margin-top:3px">{{ countLabel }}</div>
+        </div>
+        <button onClick="{{ closeDash }}" class="cal-btn" aria-label="Close">&#10005;</button>
+      </div>
+
+      <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:52px 30px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px">
+          <img src="./mubny-logo.png" alt="" style="width:96px; height:96px">
+          <div class="display" style="font-size:27px; margin-top:6px">Staff access only</div>
+          <div style="font-size:14.5px; line-height:1.6; color:var(--body); max-width:34ch">Enter the venue passcode to view and edit reservations.</div>
+          <label for="dw-pin" class="dw-lab" style="margin-top:10px">Passcode</label>
+          <input id="dw-pin" type="password" class="dw-in" value="{{ pinValue }}" onChange="{{ setPin }}" onKeyDown="{{ pinKey }}"
+                 style="width:220px; letter-spacing:0.3em; text-align:center; font-size:18px">
+          <div class="dw-err">{{ pinError }}</div>
+          <button onClick="{{ unlock }}" class="btn btn-gold">Unlock</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:26px 30px; display:flex; flex-direction:column; gap:12px; border-bottom:1px solid var(--line)">
+          <div class="dw-lab">Add a booking</div>
+          <label for="dw-date" style="font-size:13px; color:var(--body)">Date</label>
+          <input id="dw-date" type="date" class="dw-in" value="{{ formDate }}" onChange="{{ setDate }}">
+          <label for="dw-title" style="font-size:13px; color:var(--body)">Event name</label>
+          <input id="dw-title" type="text" class="dw-in" placeholder="Anderson Wedding" value="{{ formTitle }}" onChange="{{ setTitle }}">
+          <label for="dw-contact" style="font-size:13px; color:var(--body)">Contact</label>
+          <input id="dw-contact" type="text" class="dw-in" placeholder="Name or phone" value="{{ formContact }}" onChange="{{ setContact }}">
+          <button onClick="{{ addBooking }}" class="btn btn-gold" style="margin-top:6px">Mark date as booked</button>
         </div>
 
-        <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
-          <div style="padding:56px 32px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px">
-            <img src="./mubny-logo.png" alt="MUBNY Events and Banquets" style="width:104px; height:104px">
-            <div style="font-family:'Instrument Serif',serif; font-size:28px; color:#12261F; margin-top:8px">Staff access only</div>
-            <div style="font-size:14.5px; line-height:1.6; color:#7A8A82; max-width:34ch">Enter the venue passcode to view and edit reservations.</div>
-            <input type="password" placeholder="Passcode" value="{{ pinValue }}" onChange="{{ setPin }}" onKeyDown="{{ pinKey }}" style="width:220px; margin-top:8px; padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; letter-spacing:0.3em; text-align:center; color:#12261F">
-            <div style="font-size:13px; color:#C2543F; min-height:18px">{{ pinError }}</div>
-            <button onClick="{{ unlock }}" style="padding:14px 30px; border-radius:100px; border:none; background:#14483A; color:#F7F3EC; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer" style-hover="background:#0E3428">Unlock</button>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
-        <div style="padding:28px 32px; display:flex; flex-direction:column; gap:14px; border-bottom:1px solid rgba(18,38,31,0.1)">
-          <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#B98A3C">Add a booking</div>
-          <input type="date" value="{{ formDate }}" onChange="{{ setDate }}" style="padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#12261F">
-          <input type="text" placeholder="Event name (e.g. Johnson Wedding)" value="{{ formTitle }}" onChange="{{ setTitle }}" style="padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#12261F">
-          <input type="text" placeholder="Contact (name or phone)" value="{{ formContact }}" onChange="{{ setContact }}" style="padding:14px 16px; border-radius:12px; border:1px solid rgba(18,38,31,0.16); background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#12261F">
-          <button onClick="{{ addBooking }}" style="padding:15px 22px; border-radius:100px; border:none; background:#14483A; color:#F7F3EC; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer" style-hover="background:#0E3428">Mark date as booked</button>
-        </div>
-
-        <div style="padding:24px 32px 48px; display:flex; flex-direction:column; gap:10px">
-          <div style="font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase; color:#7A8A82; margin-bottom:4px">Upcoming</div>
+        <div style="padding:22px 30px 44px; display:flex; flex-direction:column; gap:9px">
+          <div class="dw-lab" style="color:var(--body); margin-bottom:4px">Upcoming</div>
           <sc-for list="{{ bookings }}" as="b" hint-placeholder-count="3">
-            <div style="display:flex; align-items:center; gap:16px; padding:16px 18px; border-radius:14px; background:#fff; border:1px solid rgba(18,38,31,0.09)">
-              <div style="display:flex; flex-direction:column; align-items:center; min-width:52px; padding:8px 0; border-radius:10px; background:rgba(20,72,58,0.07)">
-                <span style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:#7A8A82">{{ b.mon }}</span>
-                <span style="font-family:'Instrument Serif',serif; font-size:22px; color:#14483A; line-height:1.1">{{ b.dayNum }}</span>
+            <div class="dw-row">
+              <div style="display:flex; flex-direction:column; align-items:center; min-width:50px; padding:7px 0; background:rgba(185,138,60,0.12)">
+                <span style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold-lt)">{{ b.mon }}</span>
+                <span class="display" style="font-size:21px; line-height:1.1; color:var(--cream)">{{ b.dayNum }}</span>
               </div>
               <div style="flex:1; min-width:0">
-                <div style="font-size:15px; font-weight:600; color:#12261F">{{ b.title }}</div>
-                <div style="font-size:13px; color:#7A8A82; margin-top:2px">{{ b.sub }}</div>
+                <div style="font-size:15px; font-weight:600; color:var(--cream)">{{ b.title }}</div>
+                <div style="font-size:13px; color:var(--body); margin-top:2px">{{ b.sub }}</div>
               </div>
-              <button onClick="{{ b.remove }}" aria-label="Remove booking" style="width:32px; height:32px; border-radius:100px; border:1px solid rgba(18,38,31,0.14); background:transparent; cursor:pointer; color:#7A8A82; font-size:14px" style-hover="background:#C2543F; color:#fff; border-color:#C2543F">✕</button>
+              <button onClick="{{ b.remove }}" class="dw-x" aria-label="Remove booking">&#10005;</button>
             </div>
           </sc-for>
           <sc-if value="{{ noBookings }}" hint-placeholder-val="{{ false }}">
-            <div style="padding:28px; border-radius:14px; border:1px dashed rgba(18,38,31,0.18); text-align:center; font-size:14px; color:#7A8A82">No reservations yet. Add one above and it will show as unavailable on the site calendar.</div>
+            <div style="padding:26px; border:1px dashed var(--line-2); text-align:center; font-size:14px; color:var(--body)">No reservations yet. Add one above and it will show as unavailable on the site calendar.</div>
           </sc-if>
-          <button onClick="{{ lockDash }}" style="margin-top:14px; align-self:flex-start; background:none; border:none; padding:0; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; color:#7A8A82; cursor:pointer" style-hover="color:#C2543F">Lock dashboard</button>
+          <button onClick="{{ lockDash }}" style="margin-top:12px; align-self:flex-start; background:none; border:none; padding:0; font-family:var(--sans); font-size:13px; color:var(--body); cursor:pointer">Lock dashboard</button>
         </div>
-        </sc-if>
-      </div>
+      </sc-if>
     </div>
+  </div>
+
 </div>
 
 </x-dc>
 <script type="text/x-dc" data-dc-script="" data-props="{&quot;staffPasscode&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2010&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Staff dashboard&quot;}}">
 class Component extends DCLogic {
   state = {
-    slide: 0,
     monthOffset: 0,
     selected: null,
     dashOpen: false,
@@ -608,7 +1062,9 @@ class Component extends DCLogic {
     const daysIn = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
     const cells = [];
     for (let n = 0; n < firstDay; n++) {
-      cells.push({ day: "", bg: "transparent", color: "transparent", border: "transparent", cursor: "default", opacity: "1", dot: "transparent", title: "", click: () => {} });
+      // Blank grid padding: kept out of the tab order and off the a11y tree,
+      // or it reads as an unlabelled button.
+      cells.push({ day: "", cls: "day-empty", mk: "", aria: "", tab: "-1", hide: "true", click: () => {} });
     }
     for (let d = 1; d <= daysIn; d++) {
       const date = new Date(view.getFullYear(), view.getMonth(), d);
@@ -616,38 +1072,49 @@ class Component extends DCLogic {
       const past = date < today;
       const bk = booked[key];
       const sel = this.state.selected === key;
+      const label = `${MONTHS[view.getMonth()]} ${d}`;
+      // Status is carried by the marker SHAPE (ring / bar / disc) and by the
+      // accessible name, not by colour alone.
+      let cls, mk, aria;
+      if (past)      { cls = "day-past";   mk = "";          aria = `${label}, past date`; }
+      else if (sel)  { cls = "day-sel";    mk = "mk-sel";    aria = `${label}, selected, ${bk ? "booked" : "open"}`; }
+      else if (bk)   { cls = "day-booked"; mk = "mk-booked"; aria = `${label}, booked`; }
+      else           { cls = "";           mk = "mk-open";   aria = `${label}, open`; }
       cells.push({
-        day: String(d),
-        title: bk ? `Booked — ${bk.title}` : past ? "Past date" : "Available",
-        bg: sel ? "#14483A" : bk ? "rgba(194,84,63,0.10)" : "#fff",
-        color: sel ? "#F7F3EC" : bk ? "#8E3826" : "#12261F",
-        border: sel ? "#14483A" : bk ? "rgba(194,84,63,0.30)" : "rgba(18,38,31,0.10)",
-        cursor: past ? "default" : "pointer",
-        opacity: past ? "0.35" : "1",
-        dot: sel ? "#B98A3C" : bk ? "#C2543F" : "#14483A",
+        day: String(d), cls, mk, aria, tab: "0", hide: "false",
         click: past ? () => {} : () => this.setState({ selected: key }),
       });
     }
 
     const selKey = this.state.selected;
-    let selectedLabel = "No date picked", selectedNote = "Choose a day on the calendar to see its status.", selectedColor = "#7A8A82";
+    let selectedLabel = "No date picked";
+    let selectedNote = "Choose a day on the calendar to see its status.";
+    let selectedColor = "var(--body)";
     if (selKey) {
       const [y, m, d] = selKey.split("-").map(Number);
       selectedLabel = `${MONTHS[m - 1]} ${d}, ${y}`;
-      if (booked[selKey]) { selectedNote = "Booked — this date is unavailable."; selectedColor = "#8E3826"; }
-      else { selectedNote = "Open — call us and we'll hold it for you."; selectedColor = "#14483A"; }
+      if (booked[selKey]) { selectedNote = "Booked. This date is already taken."; selectedColor = "var(--warn)"; }
+      else { selectedNote = "Open. Call us and we will hold it for you."; selectedColor = "var(--gold-lt)"; }
     }
 
     const photos = [
-      { id: "hall-panorama", src: "./photos/hall-panorama.jpg", title: "Hall interior", note: "Open floor, 5,000 sq. ft.", alt: "Vaulted banquet hall set with round tables and gold runners" },
-      { id: "banquet-rounds", src: "./photos/banquet-rounds.jpg", title: "Event setup", note: "Banquet rounds for 300+", alt: "Round tables with white linens, navy chairs and crystal centerpieces" },
-      { id: "stage-decor", src: "./photos/stage-decor.jpg", title: "Stage decor", note: "Draped backdrop and staging", alt: "White draped stage backdrop with tufted sofa and florals" },
-      { id: "table-detail", src: "./photos/table-detail.jpg", title: "Table detail", note: "Linens, runners, centerpieces", alt: "Close view of a set table with gold runner and floral centerpiece" },
-      { id: "exterior", src: "./photos/exterior.jpg", title: "Exterior", note: "Clinton St frontage", alt: "Stone building exterior with arched window and tower" },
+      { id: "hall-panorama",  src: "./photos/hall-panorama-web.jpg", title: "Hall interior", note: "Open floor, 5,000 sq. ft.", alt: "Vaulted banquet hall set with round tables and gold runners" },
+      { id: "banquet-rounds", src: "./photos/banquet-rounds.jpg",    title: "Event setup",   note: "Banquet rounds for 300+",  alt: "Round tables with white linens, navy chairs and crystal centerpieces" },
+      { id: "stage-decor",    src: "./photos/stage-decor-web.jpg",   title: "Stage decor",   note: "Draped backdrop and staging", alt: "White draped stage backdrop with tufted sofa and florals" },
+      { id: "table-detail",   src: "./photos/table-detail.jpg",      title: "Table detail",  note: "Linens, runners, centerpieces", alt: "Close view of a set table with gold runner and floral centerpiece" },
+      { id: "exterior",       src: "./photos/exterior.jpg",          title: "Exterior",      note: "Clinton St frontage",      alt: "Stone building exterior with arched window and tower" },
     ];
-    const maxSlide = photos.length - 1;
-    const si = Math.min(this.state.slide, maxSlide);
-    const goSlide = (n) => () => this.setState({ slide: Math.max(0, Math.min(maxSlide, n)) });
+
+    // The track is a native scroll-snap strip, so a finger swipe already
+    // works. These arrows are the desktop affordance on top of that.
+    const nudge = (dir) => () => {
+      const el = document.getElementById("gal-track");
+      if (!el) return;
+      const first = el.querySelector(".slide");
+      const step = first ? first.getBoundingClientRect().width + 2 : el.clientWidth * 0.85;
+      const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.scrollBy({ left: dir * step, behavior: calm ? "auto" : "smooth" });
+    };
 
     const passcode = String(this.props.staffPasscode ?? "2010");
     const tryUnlock = () => {
@@ -705,34 +1172,22 @@ class Component extends DCLogic {
       }),
 
       photos,
-      shift: `calc(-${si} * (min(620px, 82vw) + 20px))`,
-      prev: goSlide(si - 1),
-      next: goSlide(si + 1),
-      dots: photos.map((p, n) => ({
-        go: goSlide(n),
-        width: n === si ? "40px" : "16px",
-        color: n === si ? "#14483A" : "rgba(18,38,31,0.18)",
-      })),
+      prev: nudge(-1),
+      next: nudge(1),
+
       stats: [
         { value: "5,000", label: "Sq. ft. indoor space" },
-        { value: "300+", label: "Guest capacity" },
-        { value: "70+", label: "On-site parking spaces" },
-        { value: "5★", label: "Community rating" },
-      ],
-      events: [
-        { n: "01", title: "Wedding Receptions", note: "The whole celebration under one roof — ceremony, dinner and dancing." },
-        { n: "02", title: "Milestone Celebrations", note: "Birthdays, anniversaries, graduations, showers and reunions." },
-        { n: "03", title: "Corporate & Fundraising Events", note: "Galas, conferences, award nights and nonprofit banquets." },
-        { n: "04", title: "Cultural & Faith Gatherings", note: "Holiday dinners, iftars and religious programs — every community welcome." },
-        { n: "05", title: "Meetings & Programs", note: "Rows, a podium and open floor for lectures, trainings and panels." },
+        { value: "300+",  label: "Guest capacity" },
+        { value: "70+",   label: "On-site parking" },
+        { value: "5★",    label: "Community rating" },
       ],
       amenities: [
-        { title: "Tables & chairs", body: "Fully furnished and ready to use on arrival." },
-        { title: "300+ capacity", body: "Seated banquet, rows or open-floor layouts." },
-        { title: "70+ parking", body: "On-site spaces, no street-parking scramble." },
-        { title: "Open floor plan", body: "5,000 sq. ft. with no fixed seating." },
-        { title: "Bring your caterer", body: "Use the vendor your family already trusts." },
-        { title: "Clinton St location", body: "Easy access from across Buffalo." },
+        { title: "Tables and chairs", body: "Fully furnished and ready to use on arrival." },
+        { title: "300+ capacity",     body: "Seated banquet, rows or open-floor layouts." },
+        { title: "70+ parking",       body: "On-site spaces, no street-parking scramble." },
+        { title: "Open floor plan",   body: "5,000 sq. ft. with no fixed seating." },
+        { title: "Bring your caterer",body: "Use the vendor your family already trusts." },
+        { title: "Clinton St",        body: "Easy access from across Buffalo." },
       ],
     };
   }
@@ -741,31 +1196,78 @@ class Component extends DCLogic {
 </script>
 
 <script>
-/* Interactive backdrop — a faint field of warm dots. They bob very slowly on
-   their own, and near the cursor they swell, brighten to gold and ease away
-   from it. Self-contained: mounts its own fixed canvas behind the whole page
-   (hero included), and falls back to a still field under reduced motion. */
+/* Scroll reveal. Sections arrive in reading order so the eye lands on the
+   headline before the grid under it. IntersectionObserver only, never a
+   scroll listener, and a no-op when the visitor asks for reduced motion. */
 (function () {
-  if (window.__mubnyDots) return;
-  window.__mubnyDots = true;
+  if (window.__mubnyReveal) return;
+  window.__mubnyReveal = true;
+
+  function revealAll(items) {
+    for (var i = 0; i < items.length; i++) items[i].classList.add('in');
+  }
+
+  function start() {
+    var calm = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var items = document.querySelectorAll('.rv');
+    if (!items.length) return;
+    if (calm || !('IntersectionObserver' in window)) return;  // stays visible
+
+    document.documentElement.classList.add('rv-on');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+    for (var j = 0; j < items.length; j++) io.observe(items[j]);
+
+    // Failsafe: whatever has not been reached after 4s gets shown anyway, so a
+    // stalled observer can never hide real content from a visitor.
+    setTimeout(function () { revealAll(items); }, 4000);
+  }
+
+  function honourHash() {
+    if (!location.hash || location.hash.length < 2) return;
+    var el = null;
+    try { el = document.querySelector(location.hash); } catch (e) { return; }
+    if (el) el.scrollIntoView();
+  }
+
+  // The markup is rendered by the component, so wait a tick past DOM ready.
+  function boot() { setTimeout(function () { start(); honourHash(); }, 60); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+<script>
+/* Interactive backdrop. Motes of dust hanging in the light, drifting up and
+   across the way they do in a sunbeam. This is the same light the background
+   gradient describes, so the two read as one effect rather than two.
+   Near the cursor they swell and catch the light. Self-contained: mounts its
+   own fixed canvas behind the page, thins out on small screens, and falls
+   back to a still scatter under reduced motion. */
+(function () {
+  if (window.__mubnyMotes) return;
+  window.__mubnyMotes = true;
 
   var reduce = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var cv = document.createElement('canvas');
   cv.setAttribute('aria-hidden', 'true');
-  // Sits ABOVE the section backgrounds (so the dots read on the dark green
-  // bands too) but below the sticky header (z 50) and the staff drawer
-  // (z 200); pointer-events:none keeps every control clickable.
+  // Above the section backgrounds so the motes read on the dark green bands,
+  // below the sticky header (z 50) and the staff drawer (z 200).
   cv.style.cssText =
     'position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none';
   var ctx = cv.getContext('2d');
 
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
-  var GAP = 38, BASE_R = 1.25, BASE_A = 0.16, REACH = 165, PUSH = 26;
-  var BASE_RGB = '206,172,116';  // warm gold — legible on cream and on green
-  var DRIFT = 1.7;               // idle bob amplitude, px
-  var dots = [], W = 0, H = 0;
+  var REACH = 175;               // cursor influence radius, px
+  var RGB = '226,190,126';       // warm gold, legible on the dark green canvas
+  var motes = [], W = 0, H = 0;
   var mx = -9999, my = -9999, tx = -9999, ty = -9999;
   var raf = 0, running = false, t0 = performance.now();
 
@@ -773,54 +1275,58 @@ class Component extends DCLogic {
     W = cv.clientWidth; H = cv.clientHeight;
     cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    dots.length = 0;
-    for (var y = GAP / 2; y < H + GAP; y += GAP)
-      for (var x = GAP / 2; x < W + GAP; x += GAP)
-        dots.push({ ox: x, oy: y, x: x, y: y });
+    // Density follows viewport area, so a phone does not pay for a desktop count.
+    // AREA_PER_MOTE is the one dial here: lower = denser.
+    var AREA_PER_MOTE = 8460;
+    var n = Math.max(49, Math.min(221, Math.round((W * H) / AREA_PER_MOTE)));
+    motes.length = 0;
+    for (var i = 0; i < n; i++) {
+      motes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.5 + Math.random() * 2.1,        // varied size reads as depth
+        a: 0.05 + Math.random() * 0.30,
+        vx: 0.05 + Math.random() * 0.15,     // a slow drift across and up
+        vy: -(0.04 + Math.random() * 0.17),
+        ph: Math.random() * 6.2832
+      });
+    }
   }
 
   function drawStill() {
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = 'rgba(' + BASE_RGB + ',' + BASE_A + ')';
-    for (var i = 0; i < dots.length; i++) {
+    for (var i = 0; i < motes.length; i++) {
+      var d = motes[i];
       ctx.beginPath();
-      ctx.arc(dots[i].ox, dots[i].oy, BASE_R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(' + RGB + ',' + d.a + ')';
+      ctx.arc(d.x, d.y, d.r, 0, 6.2832);
       ctx.fill();
     }
   }
 
   function frame() {
-    mx += (tx - mx) * 0.14;
-    my += (ty - my) * 0.14;
+    mx += (tx - mx) * 0.06;
+    my += (ty - my) * 0.06;
     var t = (performance.now() - t0) * 0.001;
     ctx.clearRect(0, 0, W, H);
-    for (var i = 0; i < dots.length; i++) {
-      var d = dots[i];
-      // idle: a slow, tiny bob so the field feels alive before you touch it
-      var bx = d.ox + Math.sin(t * 0.5 + d.ox * 0.018 + d.oy * 0.01) * DRIFT;
-      var by = d.oy + Math.cos(t * 0.42 + d.oy * 0.02 - d.ox * 0.008) * DRIFT;
-      var dx = d.ox - mx, dy = d.oy - my;
+    for (var i = 0; i < motes.length; i++) {
+      var d = motes[i];
+      // drift, plus a slow sway so the field never looks like it is on rails
+      d.x += d.vx + Math.sin(t * 0.5 + d.ph) * 0.14;
+      d.y += d.vy;
+      if (d.y < -12) { d.y = H + 12; d.x = Math.random() * W; }
+      if (d.x > W + 12) { d.x = -12; }
+
+      var r = d.r, a = d.a;
+      var dx = d.x - mx, dy = d.y - my;
       var dist = Math.sqrt(dx * dx + dy * dy);
-      var gx = bx, gy = by, a = BASE_A, r = BASE_R, warm = 0;
-      if (dist < REACH) {
-        var f = 1 - dist / REACH, e = f * f, inv = dist > 0.001 ? 1 / dist : 0;
-        gx = d.ox + dx * inv * e * PUSH;
-        gy = d.oy + dy * inv * e * PUSH;
-        a = BASE_A + e * 0.42;
-        r = BASE_R + e * 1.4;
-        warm = e;
-      }
-      d.x += (gx - d.x) * 0.16;
-      d.y += (gy - d.y) * 0.16;
-      if (warm > 0) {
-        ctx.fillStyle = 'rgba(' +
-          Math.round(206 + 26 * warm) + ',' +
-          Math.round(172 + 20 * warm) + ',' +
-          Math.round(116 + 18 * warm) + ',' + a + ')';
-      } else {
-        ctx.fillStyle = 'rgba(' + BASE_RGB + ',' + a + ')';
+      if (dist < REACH) {                       // catch the light near the cursor
+        var e = 1 - dist / REACH, e2 = e * e;
+        r += e2 * 1.7;
+        a = Math.min(0.62, a + e2 * 0.32);
       }
       ctx.beginPath();
+      ctx.fillStyle = 'rgba(' + RGB + ',' + a + ')';
       ctx.arc(d.x, d.y, r, 0, 6.2832);
       ctx.fill();
     }
@@ -835,13 +1341,12 @@ class Component extends DCLogic {
 
   function reset() {
     build();
-    if (reduce) { drawStill(); return; }
     drawStill();
     kick();
   }
 
   function aim(ev) { tx = ev.clientX; ty = ev.clientY; kick(); }
-  function release() { tx = -9999; ty = -9999; kick(); }
+  function release() { tx = -9999; ty = -9999; }
 
   function mount() {
     var host = document.body || document.documentElement;
@@ -851,12 +1356,16 @@ class Component extends DCLogic {
     // all listeners are passive so scrolling stays smooth.
     window.addEventListener('pointermove', aim, { passive: true });
     window.addEventListener('pointerdown', aim, { passive: true });
-    // let the dots ease home when the mouse leaves or the finger lifts
     document.addEventListener('mouseleave', release);
     window.addEventListener('pointerup', function (ev) {
       if (ev.pointerType !== 'mouse') release();
     }, { passive: true });
     window.addEventListener('pointercancel', release, { passive: true });
+    // Stop burning frames while the tab is in the background.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { cancelAnimationFrame(raf); running = false; }
+      else { kick(); }
+    });
     var rz;
     window.addEventListener('resize', function () {
       clearTimeout(rz); rz = setTimeout(reset, 150);
@@ -867,5 +1376,6 @@ class Component extends DCLogic {
   else document.addEventListener('DOMContentLoaded', mount);
 })();
 </script>
+
 
 </body></html>
