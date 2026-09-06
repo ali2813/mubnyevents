@@ -17,3 +17,8 @@ Desktop.ini
 # Local servers / logs
 *.log
 .image-slots.state.json
+
+# AI tooling / local skill installs (uipro). Dev-machine config, not site assets.
+.claude/
+.agents/
+skills-lock.json
