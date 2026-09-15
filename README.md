@@ -1,6 +1,6 @@
 # mubnyevents
 
-Website for **MUBNY Events & Banquets** — a 5,000 sq. ft. banquet hall at
+Website for **Mubny Events & Banquets** — a 5,000 sq. ft. banquet hall at
 2010 Clinton St, Buffalo, NY 14206, seating 300+ guests.
 
 Static site, no build step, no dependencies to install. It renders with a small
