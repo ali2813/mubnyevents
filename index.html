@@ -413,7 +413,30 @@ a { color: var(--cream); text-decoration: none; }
 .nav .btn { padding: 11px 20px; font-size: 14px; }
 .nav-links { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 34px); }
 
-@media (max-width: 860px) { .nav-links { display: none; } }
+.menu-btn {
+  display: none; width: 40px; height: 40px; flex: none;
+  align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--line-2); color: var(--cream); cursor: pointer;
+}
+.menu-bars { display: flex; flex-direction: column; gap: 5px; width: 18px; }
+.menu-bars span { display: block; height: 1.5px; background: var(--cream); }
+
+/* Dropdown panel for the links .nav-links hides on mobile. Lives inside
+   .hdr (position: sticky, so it is the containing block) and is pinned
+   to the header's own height rather than a magic number. */
+.mnav {
+  display: none; position: absolute; top: 100%; left: 0; right: 0;
+  flex-direction: column; padding: 4px var(--pad) 20px;
+  background: var(--canvas); border-bottom: 1px solid var(--line);
+}
+.mnav.is-open { display: flex; }
+.mnav a { padding: 15px 0; font-size: 16px; color: var(--body); border-bottom: 1px solid var(--line); }
+.mnav a:last-child { border-bottom: none; }
+
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .menu-btn { display: flex; }
+}
 
 /* ---- hero: asymmetric split, arch frame ------------------------------ */
 
@@ -672,6 +695,17 @@ a { color: var(--cream); text-decoration: none; }
 .inq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 22px; }
 .inq-grid .dw-in, select.dw-in { grid-column: span 1; }
 .inq-msg { margin-top: 14px; min-height: 110px; resize: vertical; }
+/* Native date inputs ignore the placeholder attribute (and some mobile
+   browsers show no format hint at all when empty), so this overlays our
+   own label and hides it as soon as a value is picked. */
+.date-field { position: relative; display: block; background: var(--raised); }
+.date-field .dw-in { position: relative; z-index: 1; background: transparent; }
+/* WebKit (Chrome/Edge/Safari, incl. iOS) renders its own "mm/dd/yyyy"
+   hint through these pseudo-elements even with no value; hide it while
+   empty so it doesn't double up with .date-ph. Once a real date is
+   picked this class comes off and the actual value is unaffected. */
+.date-field.is-empty .dw-in::-webkit-datetime-edit-fields-wrapper { color: transparent; }
+.date-ph { position: absolute; left: 17px; top: 50%; transform: translateY(-50%); color: var(--body); font-size: 15px; font-family: var(--sans); pointer-events: none; z-index: 0; }
 select.dw-in { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--body) 50%), linear-gradient(135deg, var(--body) 50%, transparent 50%); background-position: calc(100% - 20px) center, calc(100% - 15px) center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
 .inq-actions { display: flex; align-items: center; gap: 18px; margin-top: 18px; flex-wrap: wrap; }
 .inq-err { font-size: 13.5px; color: var(--warn); }
@@ -763,7 +797,17 @@ select.dw-in { appearance: none; background-image: linear-gradient(45deg, transp
         <a href="#inquire" class="nav-quiet">Inquire</a>
       </span>
       <a href="tel:+17169516433" class="btn btn-gold">(716) 951-6433</a>
+      <button class="menu-btn" onClick="{{ toggleMenu }}" aria-label="Menu" aria-expanded="{{ menuOpenAttr }}">
+        <span class="menu-bars"><span></span><span></span><span></span></span>
+      </button>
     </nav>
+    <div class="mnav {{ menuClass }}">
+      <a href="#space" onClick="{{ closeMenu }}">The Space</a>
+      <a href="#events" onClick="{{ closeMenu }}">Events</a>
+      <a href="#gallery" onClick="{{ closeMenu }}">Gallery</a>
+      <a href="#availability" onClick="{{ closeMenu }}">Dates</a>
+      <a href="#inquire" onClick="{{ closeMenu }}">Inquire</a>
+    </div>
   </header>
 
   <!-- HERO: asymmetric split. Four text elements exactly: eyebrow, headline,
@@ -982,7 +1026,12 @@ select.dw-in { appearance: none; background-image: linear-gradient(45deg, transp
               <option value="Cultural or faith gathering">Cultural or faith gathering</option>
               <option value="Other">Other</option>
             </select>
-            <input class="dw-in" type="date" aria-label="Preferred date" value="{{ inquiryDate }}" onChange="{{ setInquiryDate }}">
+            <span class="date-field {{ dateFieldClass }}">
+              <input class="dw-in" type="date" aria-label="Preferred date" value="{{ inquiryDate }}" onChange="{{ setInquiryDate }}">
+              <sc-if value="{{ inquiryDateEmpty }}" hint-placeholder-val="{{ true }}">
+                <span class="date-ph">Preferred date</span>
+              </sc-if>
+            </span>
             <input class="dw-in" type="number" min="1" placeholder="Guest count" value="{{ inquiryGuests }}" onChange="{{ setInquiryGuests }}">
           </div>
           <textarea class="dw-in inq-msg" placeholder="Tell us a bit about your event" value="{{ inquiryMessage }}" onChange="{{ setInquiryMessage }}"></textarea>
@@ -1023,8 +1072,8 @@ select.dw-in { appearance: none; background-image: linear-gradient(45deg, transp
       </div>
       <div class="ft-col">
         <div class="ft-h">Visit</div>
-        <div>2010 Clinton St<br>Buffalo, NY 14206</div>
-        <a href="https://maps.google.com/?q=2010+Clinton+St+Buffalo+NY+14206" style="margin-top:10px">Get directions &#8594;</a>
+        <div>1990 Clinton St<br>Buffalo, NY 14206</div>
+        <a href="https://maps.google.com/?q=1990+Clinton+St+Buffalo+NY+14206" style="margin-top:10px">Get directions &#8594;</a>
       </div>
       <div class="ft-col">
         <div class="ft-h">Contact</div>
@@ -1114,6 +1163,7 @@ class Component extends DCLogic {
     bookings: [],
     inquiry: { name: "", email: "", phone: "", eventType: "", date: "", guests: "", message: "" },
     inquiryStatus: "idle", // idle | sending | sent | error
+    menuOpen: false,
   };
 
   KEY = "mubny-reservations-v1";
@@ -1251,6 +1301,11 @@ class Component extends DCLogic {
       nextMonth: () => this.setState({ monthOffset: this.state.monthOffset + 1 }),
       selectedLabel, selectedNote, selectedColor,
 
+      menuClass: this.state.menuOpen ? "is-open" : "",
+      menuOpenAttr: this.state.menuOpen ? "true" : "false",
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      closeMenu: () => this.setState({ menuOpen: false }),
+
       dashOpen: this.state.dashOpen,
       dashClass: this.state.dashOpen ? "is-open" : "",
       openDash: () => this.setState({ dashOpen: true, pin: "", pinError: "" }),
@@ -1313,6 +1368,8 @@ class Component extends DCLogic {
       inquiryPhone: this.state.inquiry.phone,
       inquiryEventType: this.state.inquiry.eventType,
       inquiryDate: this.state.inquiry.date,
+      inquiryDateEmpty: !this.state.inquiry.date,
+      dateFieldClass: this.state.inquiry.date ? "" : "is-empty",
       inquiryGuests: this.state.inquiry.guests,
       inquiryMessage: this.state.inquiry.message,
       setInquiryName: setInquiryField("name"),
