@@ -660,6 +660,21 @@ a { color: var(--cream); text-decoration: none; }
   .chan-k { grid-column: 1 / -1; }
 }
 
+/* ---- inquiry form ------------------------------------------------------
+   The fourth channel, for the visitor who does not want to place a call.
+   Same square, no-radius shape as the rest of the site; gold is still the
+   only accent. Lives inside #contact, below the call/text/email rows. */
+.inq { padding-top: clamp(30px, 3.4vw, 42px); }
+.inq-h { font-family: var(--display); font-size: clamp(22px, 2vw, 26px); color: var(--cream); }
+.inq-lede { font-size: 14.5px; color: var(--body); margin-top: 6px; max-width: 46ch; }
+.inq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 22px; }
+.inq-grid .dw-in, select.dw-in { grid-column: span 1; }
+.inq-msg { margin-top: 14px; min-height: 110px; resize: vertical; }
+select.dw-in { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--body) 50%), linear-gradient(135deg, var(--body) 50%, transparent 50%); background-position: calc(100% - 20px) center, calc(100% - 15px) center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+.inq-actions { display: flex; align-items: center; gap: 18px; margin-top: 18px; flex-wrap: wrap; }
+.inq-err { font-size: 13.5px; color: var(--warn); }
+.inq-sent { padding: 30px 0; font-family: var(--display); font-size: clamp(20px, 1.8vw, 24px); color: var(--gold-lt); }
+
 /* ---- footer ---------------------------------------------------------- */
 
 .ft { background: var(--ink); border-top: 1px solid var(--line); }
@@ -942,6 +957,44 @@ a { color: var(--cream); text-decoration: none; }
         <span class="chan-a">&#8594;</span>
       </a>
     </div>
+
+    <div class="inq rv">
+      <sc-if value="{{ inquirySent }}" hint-placeholder-val="{{ false }}">
+        <div class="inq-sent">Thanks — we've got your details and will be in touch within a day.</div>
+      </sc-if>
+      <sc-if value="{{ inquiryFormVisible }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div class="inq-h">Don't like calling?</div>
+          <p class="inq-lede">Send us the details below and we'll follow up by email or phone, whichever you'd rather.</p>
+          <div class="inq-grid">
+            <input class="dw-in" type="text" placeholder="Your name" value="{{ inquiryName }}" onChange="{{ setInquiryName }}">
+            <input class="dw-in" type="email" placeholder="Email" value="{{ inquiryEmail }}" onChange="{{ setInquiryEmail }}">
+            <input class="dw-in" type="tel" placeholder="Phone (optional)" value="{{ inquiryPhone }}" onChange="{{ setInquiryPhone }}">
+            <select class="dw-in" value="{{ inquiryEventType }}" onChange="{{ setInquiryEventType }}">
+              <option value="">Event type</option>
+              <option value="Wedding reception">Wedding reception</option>
+              <option value="Milestone celebration">Milestone celebration (birthday, baby shower, quinceañera…)</option>
+              <option value="Meeting or program">Meeting or program</option>
+              <option value="Corporate or fundraising">Corporate or fundraising</option>
+              <option value="Cultural or faith gathering">Cultural or faith gathering</option>
+              <option value="Other">Other</option>
+            </select>
+            <input class="dw-in" type="date" aria-label="Preferred date" value="{{ inquiryDate }}" onChange="{{ setInquiryDate }}">
+            <input class="dw-in" type="number" min="1" placeholder="Guest count" value="{{ inquiryGuests }}" onChange="{{ setInquiryGuests }}">
+          </div>
+          <textarea class="dw-in inq-msg" placeholder="Tell us a bit about your event" value="{{ inquiryMessage }}" onChange="{{ setInquiryMessage }}"></textarea>
+          <div class="inq-actions">
+            <button type="button" onClick="{{ submitInquiry }}" class="btn btn-gold" disabled="{{ inquirySending }}">{{ inquirySendLabel }}</button>
+            <sc-if value="{{ inquiryInvalid }}" hint-placeholder-val="{{ false }}">
+              <span class="inq-err">Name, email and a short message are needed.</span>
+            </sc-if>
+            <sc-if value="{{ inquiryError }}" hint-placeholder-val="{{ false }}">
+              <span class="inq-err">Something went wrong sending that — call or text us instead.</span>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
   </section>
 
   <footer class="ft">
@@ -1060,6 +1113,8 @@ class Component extends DCLogic {
     pinError: "",
     form: { date: "", title: "", contact: "" },
     bookings: [],
+    inquiry: { name: "", email: "", phone: "", eventType: "", date: "", guests: "", message: "" },
+    inquiryStatus: "idle", // idle | sending | sent | error
   };
 
   KEY = "mubny-reservations-v1";
@@ -1082,6 +1137,34 @@ class Component extends DCLogic {
   save(bookings) {
     this.setState({ bookings });
     try { localStorage.setItem(this.KEY, JSON.stringify(bookings)); } catch (e) {}
+  }
+
+  FORM_ENDPOINT = "https://formspree.io/f/mljdnkav";
+
+  async submitInquiry() {
+    const f = this.state.inquiry;
+    if (!f.name || !f.email || !f.message) { this.setState({ inquiryStatus: "invalid" }); return; }
+    this.setState({ inquiryStatus: "sending" });
+    try {
+      const res = await fetch(this.FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: f.name,
+          email: f.email,
+          phone: f.phone,
+          eventType: f.eventType,
+          preferredDate: f.date,
+          guests: f.guests,
+          message: f.message,
+          _subject: `Event inquiry: ${f.eventType || "General"} — ${f.name}`,
+        }),
+      });
+      if (res.ok) this.setState({ inquiryStatus: "sent" });
+      else this.setState({ inquiryStatus: "error" });
+    } catch (e) {
+      this.setState({ inquiryStatus: "error" });
+    }
   }
 
   renderVals() {
@@ -1159,6 +1242,7 @@ class Component extends DCLogic {
 
     const sorted = bookings.slice().sort((a, b) => a.date.localeCompare(b.date));
     const setField = (k) => (e) => this.setState({ form: Object.assign({}, this.state.form, { [k]: e.target.value }) });
+    const setInquiryField = (k) => (e) => this.setState({ inquiry: Object.assign({}, this.state.inquiry, { [k]: e.target.value }), inquiryStatus: "idle" });
 
     return {
       weekdays: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
@@ -1224,6 +1308,28 @@ class Component extends DCLogic {
         { title: "Bring your caterer",body: "Use the vendor your family already trusts." },
         { title: "Clinton St",        body: "Easy access from across Buffalo." },
       ],
+
+      inquiryName: this.state.inquiry.name,
+      inquiryEmail: this.state.inquiry.email,
+      inquiryPhone: this.state.inquiry.phone,
+      inquiryEventType: this.state.inquiry.eventType,
+      inquiryDate: this.state.inquiry.date,
+      inquiryGuests: this.state.inquiry.guests,
+      inquiryMessage: this.state.inquiry.message,
+      setInquiryName: setInquiryField("name"),
+      setInquiryEmail: setInquiryField("email"),
+      setInquiryPhone: setInquiryField("phone"),
+      setInquiryEventType: setInquiryField("eventType"),
+      setInquiryDate: setInquiryField("date"),
+      setInquiryGuests: setInquiryField("guests"),
+      setInquiryMessage: setInquiryField("message"),
+      inquirySending: this.state.inquiryStatus === "sending",
+      inquirySent: this.state.inquiryStatus === "sent",
+      inquiryInvalid: this.state.inquiryStatus === "invalid",
+      inquiryError: this.state.inquiryStatus === "error",
+      inquiryFormVisible: this.state.inquiryStatus !== "sent",
+      inquirySendLabel: this.state.inquiryStatus === "sending" ? "Sending…" : "Send details",
+      submitInquiry: () => this.submitInquiry(),
     };
   }
 }
