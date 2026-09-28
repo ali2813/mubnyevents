@@ -5,6 +5,28 @@
 <script src="./assets/vendor/react.production.min.js"></script>
 <script src="./assets/vendor/react-dom.production.min.js"></script>
 <script src="./support.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+/* Shared reservation calendar. Public read (anyone can see booked dates),
+   open write (same trust level as the staff passcode gate today — a
+   convenience boundary, not a real one). If this fails to load (network
+   policy, ad blocker, offline) window.mubnyDb stays undefined and the
+   calendar just shows no bookings instead of breaking the page. */
+try {
+  firebase.initializeApp({
+    apiKey: "AIzaSyBw9yra7SyzvyjNrm8I4dAfT4n3sZ12nNA",
+    authDomain: "mubny-events-webpage.firebaseapp.com",
+    projectId: "mubny-events-webpage",
+    storageBucket: "mubny-events-webpage.firebasestorage.app",
+    messagingSenderId: "218865681510",
+    appId: "1:218865681510:web:66f71d2e7d6828c90419a7",
+  });
+  window.mubnyDb = firebase.firestore();
+} catch (e) {
+  console.error("[mubny] Firebase init failed:", e);
+}
+</script>
 </head>
 <body>
 <x-dc>
@@ -1166,26 +1188,38 @@ class Component extends DCLogic {
     menuOpen: false,
   };
 
-  KEY = "mubny-reservations-v1";
-
+  // Shared across every visitor's browser via Firestore (collection
+  // "bookings", one doc per date, doc id === the date string). Replaces
+  // the old localStorage version, which only ever persisted per-browser.
   componentDidMount() {
+    if (!window.mubnyDb) return;
     try {
-      const raw = localStorage.getItem(this.KEY);
-      if (raw) this.setState({ bookings: JSON.parse(raw) });
-      else this.setState({ bookings: [
-        { date: this.iso(new Date(Date.now() + 6 * 864e5)), title: "Anderson Wedding", contact: "(716) 555-0148" },
-        { date: this.iso(new Date(Date.now() + 13 * 864e5)), title: "Rotary Club Banquet", contact: "Events committee" },
-      ] });
+      this.unsubBookings = window.mubnyDb.collection("bookings").onSnapshot(
+        (snap) => this.setState({ bookings: snap.docs.map((doc) => ({ date: doc.id, ...doc.data() })) }),
+        (e) => console.error("[mubny] bookings listener failed:", e)
+      );
     } catch (e) {}
+  }
+
+  componentWillUnmount() {
+    if (this.unsubBookings) this.unsubBookings();
   }
 
   iso(d) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   }
 
-  save(bookings) {
-    this.setState({ bookings });
-    try { localStorage.setItem(this.KEY, JSON.stringify(bookings)); } catch (e) {}
+  setBooking(booking) {
+    if (!window.mubnyDb) return;
+    window.mubnyDb.collection("bookings").doc(booking.date)
+      .set({ title: booking.title, contact: booking.contact })
+      .catch((e) => console.error("[mubny] failed to save booking:", e));
+  }
+
+  removeBooking(date) {
+    if (!window.mubnyDb) return;
+    window.mubnyDb.collection("bookings").doc(date).delete()
+      .catch((e) => console.error("[mubny] failed to remove booking:", e));
   }
 
   FORM_ENDPOINT = "https://formspree.io/f/mljdnkav";
@@ -1328,8 +1362,7 @@ class Component extends DCLogic {
       addBooking: () => {
         const f = this.state.form;
         if (!f.date) return;
-        const next = bookings.filter(b => b.date !== f.date).concat([{ date: f.date, title: f.title || "Reserved", contact: f.contact || "" }]);
-        this.save(next);
+        this.setBooking({ date: f.date, title: f.title || "Reserved", contact: f.contact || "" });
         this.setState({ form: { date: "", title: "", contact: "" } });
       },
       noBookings: sorted.length === 0,
@@ -1340,7 +1373,7 @@ class Component extends DCLogic {
           dayNum: String(d),
           title: b.title,
           sub: b.contact ? `${b.contact} · ${y}` : String(y),
-          remove: () => this.save(bookings.filter(x => x.date !== b.date)),
+          remove: () => this.removeBooking(b.date),
         };
       }),
 
