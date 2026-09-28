@@ -1038,7 +1038,7 @@ select.dw-in { appearance: none; background-image: linear-gradient(45deg, transp
           <div class="inq-actions">
             <button type="button" onClick="{{ submitInquiry }}" class="btn btn-gold" disabled="{{ inquirySending }}">{{ inquirySendLabel }}</button>
             <sc-if value="{{ inquiryInvalid }}" hint-placeholder-val="{{ false }}">
-              <span class="inq-err">Name, email and a short message are needed.</span>
+              <span class="inq-err">Name, email, preferred date and a short message are needed.</span>
             </sc-if>
             <sc-if value="{{ inquiryError }}" hint-placeholder-val="{{ false }}">
               <span class="inq-err">Something went wrong sending that — call or text us instead.</span>
@@ -1192,7 +1192,7 @@ class Component extends DCLogic {
 
   async submitInquiry() {
     const f = this.state.inquiry;
-    if (!f.name || !f.email || !f.message) { this.setState({ inquiryStatus: "invalid" }); return; }
+    if (!f.name || !f.email || !f.date || !f.message) { this.setState({ inquiryStatus: "invalid" }); return; }
     this.setState({ inquiryStatus: "sending" });
     try {
       const res = await fetch(this.FORM_ENDPOINT, {
